@@ -69,10 +69,13 @@ def post_carousel_to_threads(
         children.append(item_id)
         print(f"[INFO] カルーセルアイテム作成: {item_id}")
 
+    # アイテムの処理完了を待つ
+    time.sleep(15)
+
     # 2. カルーセルコンテナを作成
     carousel_res = requests.post(
         f"{THREADS_API_BASE}/{account_id}/threads",
-        params={
+        data={
             "media_type": "CAROUSEL",
             "children": ",".join(children),
             "text": text,
