@@ -4,29 +4,30 @@ import sys
 from datetime import datetime
 
 from config import THREADS_ACCOUNTS
-from fetcher.base_fetcher import get_random_product
+from fetcher.base_fetcher import get_random_products
 from fetcher.image_fetcher import get_product_image_url
 from generator.content_generator import generate_post_text
-from poster.threads_poster import post_to_threads
+from poster.threads_poster import post_carousel_to_threads
 
 LOG_PATH = "logs/post_log.csv"
+CATEGORY_URL = "https://dgru.base.shop/categories/7018493"
 
 
-def log_post(breed: str, item_name: str, url: str, post_id: str):
-    """投稿履歴をCSVに記録する"""
+def log_post(breed: str, products: list, post_id: str):
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     file_exists = os.path.exists(LOG_PATH)
     with open(LOG_PATH, "a", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["posted_at", "breed", "item_name", "url", "post_id"])
         if not file_exists:
             writer.writeheader()
-        writer.writerow({
-            "posted_at": datetime.now().isoformat(),
-            "breed": breed,
-            "item_name": item_name,
-            "url": url,
-            "post_id": post_id
-        })
+        for p in products:
+            writer.writerow({
+                "posted_at": datetime.now().isoformat(),
+                "breed": breed,
+                "item_name": p["item_name"],
+                "url": p["url"],
+                "post_id": post_id,
+            })
 
 
 def run(breed: str):
@@ -35,40 +36,43 @@ def run(breed: str):
         print(f"[ERROR] アカウント未設定: {breed}")
         return
 
-    # 1. 商品をランダム取得
-    product = get_random_product(breed, LOG_PATH)
-    if not product:
+    # 1. 商品を4件ランダム取得
+    products = get_random_products(breed, n=4, log_path=LOG_PATH)
+    if not products:
         print("[ERROR] 投稿可能な商品がありません")
         return
-    print(f"[INFO] 商品選定: {product['item_name']}")
+    print(f"[INFO] 商品選定: {[p['item_name'] for p in products]}")
 
-    # 2. 画像URL取得
-    image_url = get_product_image_url(product["url"])
-    if not image_url:
-        print(f"[ERROR] 画像取得失敗: {product['url']}")
+    # 2. 各商品の画像URLを取得
+    image_urls = []
+    for p in products:
+        url = get_product_image_url(p["url"])
+        if url:
+            image_urls.append(url)
+            print(f"[INFO] 画像取得: {url}")
+        else:
+            print(f"[WARN] 画像取得失敗: {p['url']}")
+
+    if len(image_urls) < 2:
+        print("[ERROR] 画像が2枚未満のため投稿をスキップ")
         return
-    print(f"[INFO] 画像URL取得: {image_url}")
 
     # 3. 投稿文生成
-    text = generate_post_text(
-        item_name=product["item_name"],
-        price=int(product["price"]),
-        breed=breed
-    )
+    text = generate_post_text(breed=breed)
     print(f"[INFO] 生成された投稿文:\n{text}\n")
 
-    # 4. Threadsに投稿
-    post_id = post_to_threads(
+    # 4. カルーセル投稿（リプライにカテゴリURL）
+    post_id = post_carousel_to_threads(
         account_id=account["account_id"],
         access_token=account["access_token"],
-        image_url=image_url,
+        image_urls=image_urls,
         text=text,
-        product_url=product.get("url", "")
+        reply_text=CATEGORY_URL,
     )
-    print(f"[INFO] 投稿完了: post_id={post_id}")
 
     # 5. ログ記録
-    log_post(breed, product["item_name"], product["url"], post_id)
+    if post_id:
+        log_post(breed, products, post_id)
 
 
 if __name__ == "__main__":

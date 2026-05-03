@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    background: #0d0d0d;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 70px;
+    overflow: hidden;
+  }
+
+  .title {
+    font-size: 28px;
+    letter-spacing: 0.3em;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .main-title {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: 22px;
+    color: #888;
+    margin-bottom: 70px;
+    letter-spacing: 0.1em;
+  }
+
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 32px 40px;
+    width: 100%;
+    gap: 30px;
+    position: relative;
+  }
+
+  .step-number {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #222;
+    border: 1px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-label {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: #666;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .step-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .step-desc {
+    font-size: 18px;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  .step-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+  }
+
+  .arrow {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, #333, #222);
+    margin: 0 auto;
+  }
+
+  .trigger {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 24px 40px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+  .trigger-label {
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: #555;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .trigger-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+  }
+
+  .trigger-sub {
+    font-size: 16px;
+    color: #555;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer {
+    margin-top: 60px;
+    text-align: center;
+    color: #333;
+    font-size: 18px;
+    letter-spacing: 0.15em;
+  }
+
+  .result {
+    margin-top: 50px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 36px 40px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .stat-label {
+    font-size: 16px;
+    color: #666;
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .divider {
+    width: 1px;
+    height: 60px;
+    background: #2a2a2a;
+  }
+</style>
+</head>
+<body>
+
+  <div class="title">DGRU × AI</div>
+  <div class="main-title">自動投稿<br>システム</div>
+  <div class="subtitle">Threads Auto Post</div>
+
+  <div class="flow">
+
+    <div class="trigger">
+      <div class="trigger-label">Trigger</div>
+      <div class="trigger-value">GitHub Actions</div>
+      <div class="trigger-sub">2時間ごとに自動起動 — 1日12回</div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <div class="step">
+      <div class="step-number">01</div>
+      <div class="step-content">
+        <div class="step-label">Product Selection</div>
+        <div class="step-title">商品選定</div>
+        <div class="step-desc">30商品からランダムに1つ選択<br>直近7日間の重複を自動回避</div>
+      </div>
+      <div class="step-icon">🗂</div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <div class="step">
+      <div class="step-number">02</div>
+      <div class="step-content">
+        <div class="step-label">Image Fetch</div>
+        <div class="step-title">画像取得</div>
+        <div class="step-desc">BASEの商品ページから<br>og:imageを自動取得</div>
+      </div>
+      <div class="step-icon">🖼</div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <div class="step">
+      <div class="step-number">03</div>
+      <div class="step-content">
+        <div class="step-label">AI Copywriting</div>
+        <div class="step-title">投稿文生成</div>
+        <div class="step-desc">Claude AIが柴犬オーナー向けの<br>自然な投稿文を自動作成</div>
+      </div>
+      <div class="step-icon">✍️</div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <div class="step">
+      <div class="step-number">04</div>
+      <div class="step-content">
+        <div class="step-label">Post to Threads</div>
+        <div class="step-title">自動投稿</div>
+        <div class="step-desc">画像＋テキストでメイン投稿<br>商品URLをリプライで追加</div>
+      </div>
+      <div class="step-icon">📲</div>
+    </div>
+
+  </div>
+
+  <div class="result">
+    <div class="stat">
+      <div class="stat-value">12</div>
+      <div class="stat-label">投稿 / 日</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-value">30</div>
+      <div class="stat-label">商品数</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-value">0</div>
+      <div class="stat-label">人的作業</div>
+    </div>
+  </div>
+
+  <div class="footer">DGRU — shiba.goods</div>
+
+</body>
+</html>

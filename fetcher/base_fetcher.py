@@ -2,11 +2,11 @@ import csv
 import random
 import os
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import List
 
 
-def get_random_product(breed: str, log_path: str = "logs/post_log.csv") -> Optional[dict]:
-    """指定犬種の商品をランダムに1件取得（直近7日間の重複を避ける）"""
+def get_random_products(breed: str, n: int = 4, log_path: str = "logs/post_log.csv") -> List[dict]:
+    """指定犬種の商品をランダムにn件取得（直近7日間の重複を避ける）"""
     csv_path = f"data/products_{breed}.csv"
 
     if not os.path.exists(csv_path):
@@ -16,7 +16,7 @@ def get_random_product(breed: str, log_path: str = "logs/post_log.csv") -> Optio
         products = list(csv.DictReader(f))
 
     if not products:
-        return None
+        return []
 
     # 直近の投稿済みURLを取得
     recent_urls = set()
@@ -31,8 +31,8 @@ def get_random_product(breed: str, log_path: str = "logs/post_log.csv") -> Optio
 
     available = [p for p in products if p["url"] not in recent_urls]
 
-    # 全商品が投稿済みならリセット
-    if not available:
+    # 未投稿商品がn件未満ならリセット
+    if len(available) < n:
         available = products
 
-    return random.choice(available)
+    return random.sample(available, min(n, len(available)))
