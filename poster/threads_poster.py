@@ -5,21 +5,6 @@ from typing import Optional, List
 THREADS_API_BASE = "https://graph.threads.net/v1.0"
 
 
-def _create_carousel_item(account_id: str, access_token: str, image_url: str) -> Optional[str]:
-    """カルーセル用の子コンテナを作成してIDを返す"""
-    res = requests.post(
-        f"{THREADS_API_BASE}/{account_id}/threads",
-        params={
-            "media_type": "IMAGE",
-            "image_url": image_url,
-            "is_carousel_item": "true",
-            "access_token": access_token,
-        }
-    )
-    res.raise_for_status()
-    return res.json()["id"]
-
-
 def _publish(account_id: str, access_token: str, creation_id: str) -> Optional[str]:
     """コンテナを公開して投稿IDを返す"""
     time.sleep(30)
@@ -53,44 +38,85 @@ def _post_reply(account_id: str, access_token: str, reply_to_id: str, text: str)
     return res.json().get("id")
 
 
-def post_carousel_to_threads(
+def _try_carousel(account_id: str, access_token: str, image_urls: List[str], text: str) -> Optional[str]:
+    """カルーセル投稿を試みる。失敗したらNoneを返す"""
+    try:
+        children = []
+        for url in image_urls:
+            res = requests.post(
+                f"{THREADS_API_BASE}/{account_id}/threads",
+                params={
+                    "media_type": "IMAGE",
+                    "image_url": url,
+                    "is_carousel_item": "true",
+                    "access_token": access_token,
+                }
+            )
+            if not res.ok:
+                print(f"[WARN] カルーセルアイテム作成失敗: {res.status_code} {res.text}")
+                return None
+            children.append(res.json()["id"])
+            print(f"[INFO] カルーセルアイテム作成: {children[-1]}")
+
+        time.sleep(15)
+
+        carousel_res = requests.post(
+            f"{THREADS_API_BASE}/{account_id}/threads",
+            data={
+                "media_type": "CAROUSEL",
+                "children": ",".join(children),
+                "text": text,
+                "access_token": access_token,
+            }
+        )
+        if not carousel_res.ok:
+            print(f"[WARN] カルーセルコンテナ作成失敗: {carousel_res.status_code} {carousel_res.text}")
+            return None
+
+        carousel_id = carousel_res.json()["id"]
+        print(f"[INFO] カルーセルコンテナ作成: {carousel_id}")
+        return _publish(account_id, access_token, carousel_id)
+
+    except Exception as e:
+        print(f"[WARN] カルーセル投稿エラー: {e}")
+        return None
+
+
+def _post_single_image(account_id: str, access_token: str, image_url: str, text: str) -> Optional[str]:
+    """単画像投稿"""
+    res = requests.post(
+        f"{THREADS_API_BASE}/{account_id}/threads",
+        params={
+            "media_type": "IMAGE",
+            "image_url": image_url,
+            "text": text,
+            "access_token": access_token,
+        }
+    )
+    res.raise_for_status()
+    creation_id = res.json()["id"]
+    return _publish(account_id, access_token, creation_id)
+
+
+def post_to_threads(
     account_id: str,
     access_token: str,
     image_urls: List[str],
     text: str,
     reply_text: str = ""
 ) -> Optional[str]:
-    """4枚カルーセル投稿し、リプライにURLを追加する"""
+    """カルーセル投稿を試み、失敗したら単画像にフォールバックする"""
 
-    # 1. 各画像の子コンテナを作成
-    children = []
-    for url in image_urls:
-        item_id = _create_carousel_item(account_id, access_token, url)
-        children.append(item_id)
-        print(f"[INFO] カルーセルアイテム作成: {item_id}")
+    # カルーセル投稿を試みる
+    post_id = _try_carousel(account_id, access_token, image_urls, text)
 
-    # アイテムの処理完了を待つ
-    time.sleep(15)
+    # 失敗したら1枚目の画像で単画像投稿
+    if not post_id:
+        print("[INFO] 単画像投稿にフォールバック")
+        post_id = _post_single_image(account_id, access_token, image_urls[0], text)
+        print(f"[INFO] 投稿完了: post_id={post_id}")
 
-    # 2. カルーセルコンテナを作成
-    carousel_res = requests.post(
-        f"{THREADS_API_BASE}/{account_id}/threads",
-        data={
-            "media_type": "CAROUSEL",
-            "children": ",".join(children),
-            "text": text,
-            "access_token": access_token,
-        }
-    )
-    carousel_res.raise_for_status()
-    carousel_id = carousel_res.json()["id"]
-    print(f"[INFO] カルーセルコンテナ作成: {carousel_id}")
-
-    # 3. 公開
-    post_id = _publish(account_id, access_token, carousel_id)
-    print(f"[INFO] 投稿完了: post_id={post_id}")
-
-    # 4. リプライ追加
+    # リプライ追加
     if reply_text and post_id:
         time.sleep(5)
         _post_reply(account_id, access_token, post_id, reply_text)

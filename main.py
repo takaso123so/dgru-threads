@@ -7,7 +7,7 @@ from config import THREADS_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
 from fetcher.image_fetcher import get_product_image_url
 from generator.content_generator import generate_post_text
-from poster.threads_poster import post_carousel_to_threads
+from poster.threads_poster import post_to_threads
 
 LOG_PATH = "logs/post_log.csv"
 CATEGORY_URL = "https://dgru.base.shop/categories/7018493"
@@ -62,7 +62,7 @@ def run(breed: str):
     print(f"[INFO] 生成された投稿文:\n{text}\n")
 
     # 4. カルーセル投稿（リプライにカテゴリURL）
-    post_id = post_carousel_to_threads(
+    post_id = post_to_threads(
         account_id=account["account_id"],
         access_token=account["access_token"],
         image_urls=image_urls,
