@@ -1,10 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 from typing import Optional
 
 
 def get_product_image_url(product_url: str) -> Optional[str]:
-    """BASE商品ページからog:image URLを取得する"""
+    """BASE商品ページからog:image URLを取得する（クエリパラメータを除去）"""
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
     }
@@ -16,6 +17,7 @@ def get_product_image_url(product_url: str) -> Optional[str]:
     og_image = soup.find("meta", property="og:image")
 
     if og_image and og_image.get("content"):
-        return og_image["content"]
+        parsed = urlparse(og_image["content"])
+        return parsed._replace(query="", fragment="").geturl()
 
     return None
