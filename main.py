@@ -14,6 +14,7 @@ LOG_PATH = "logs/post_log.csv"
 
 def log_post(breed: str, item_name: str, url: str, post_id: str):
     """投稿履歴をCSVに記録する"""
+    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     file_exists = os.path.exists(LOG_PATH)
     with open(LOG_PATH, "a", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["posted_at", "breed", "item_name", "url", "post_id"])
