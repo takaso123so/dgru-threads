@@ -2,7 +2,7 @@ name: Threads Auto Post
 
 on:
   schedule:
-    - cron: '0 * * * *'  # 1時間ごと（UTC）= 1日24回
+    - cron: '*/15 * * * *'  # 15分ごと（テスト用）
   workflow_dispatch:
     inputs:
       breed:
