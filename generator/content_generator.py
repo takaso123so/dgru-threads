@@ -33,9 +33,16 @@ SYSTEM_PROMPT = """
 """
 
 
+BREED_NAMES = {
+    "shiba": "柴犬",
+    "schnauzer": "シュナウザー",
+}
+
+
 def generate_post_text(breed: str = "柴犬") -> str:
     """ブランド・ライフスタイル訴求のThreads投稿文を生成する"""
-    prompt = f"犬種：{breed}のオーナーに向けたThreads投稿文を1つ書いてください。"
+    breed_ja = BREED_NAMES.get(breed, breed)
+    prompt = f"犬種：{breed_ja}のオーナーに向けたThreads投稿文を1つ書いてください。必ず「{breed_ja}」という言葉を投稿文中に入れてください。"
 
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
