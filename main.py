@@ -10,7 +10,10 @@ from generator.content_generator import generate_post_text
 from poster.threads_poster import post_to_threads
 
 LOG_PATH = "logs/post_log.csv"
-CATEGORY_URL = "https://dgru.base.shop/categories/7018493"
+CATEGORY_URLS = {
+    "shiba": "https://dgru.base.shop/categories/7018493",
+    "schnauzer": "https://dgru.base.shop/categories/6987466",
+}
 
 
 def log_post(breed: str, products: list, post_id: str):
@@ -67,7 +70,7 @@ def run(breed: str):
         access_token=account["access_token"],
         image_urls=image_urls,
         text=text,
-        reply_text=CATEGORY_URL,
+        reply_text=CATEGORY_URLS.get(breed, ""),
     )
 
     # 5. ログ記録
