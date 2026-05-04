@@ -2,7 +2,7 @@ name: Threads Auto Post
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # 2時間ごと（UTC）= 日本時間9時〜翌3時に12回
+    - cron: '0 * * * *'  # 1時間ごと（UTC）= 1日24回
   workflow_dispatch:        # 手動実行も可能
 
 jobs:
