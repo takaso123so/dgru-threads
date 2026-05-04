@@ -3,7 +3,11 @@ name: Threads Auto Post
 on:
   schedule:
     - cron: '0 * * * *'  # 1時間ごと（UTC）= 1日24回
-  workflow_dispatch:        # 手動実行も可能
+  workflow_dispatch:
+    inputs:
+      breed:
+        description: '投稿する犬種（shiba / schnauzer / all）'
+        default: 'all'
 
 jobs:
   post:
@@ -25,4 +29,15 @@ jobs:
           CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
           SHIBA_ACCOUNT_ID: ${{ secrets.SHIBA_ACCOUNT_ID }}
           SHIBA_ACCESS_TOKEN: ${{ secrets.SHIBA_ACCESS_TOKEN }}
-        run: python main.py shiba
+          SCHNAUZER_ACCOUNT_ID: ${{ secrets.SCHNAUZER_ACCOUNT_ID }}
+          SCHNAUZER_ACCESS_TOKEN: ${{ secrets.SCHNAUZER_ACCESS_TOKEN }}
+        run: |
+          BREED="${{ github.event.inputs.breed }}"
+          if [ "$BREED" = "shiba" ]; then
+            python main.py shiba
+          elif [ "$BREED" = "schnauzer" ]; then
+            python main.py schnauzer
+          else
+            python main.py shiba
+            python main.py schnauzer
+          fi
