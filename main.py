@@ -14,10 +14,6 @@ CATEGORY_URLS = {
     "shiba": "https://dgru.base.shop/categories/7018493",
     "schnauzer": "https://dgru.base.shop/categories/6987466",
 }
-TOPIC_TAGS = {
-    "shiba": "柴犬",
-    "schnauzer": "シュナウザー",
-}
 
 
 def log_post(breed: str, products: list, post_id: str):
@@ -75,7 +71,6 @@ def run(breed: str):
         image_urls=image_urls,
         text=text,
         reply_text=CATEGORY_URLS.get(breed, ""),
-        topic_tag=TOPIC_TAGS.get(breed, ""),
     )
 
     # 5. ログ記録
