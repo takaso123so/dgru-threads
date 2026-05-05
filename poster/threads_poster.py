@@ -38,7 +38,7 @@ def _post_reply(account_id: str, access_token: str, reply_to_id: str, text: str)
     return res.json().get("id")
 
 
-def _try_carousel(account_id: str, access_token: str, image_urls: List[str], text: str) -> Optional[str]:
+def _try_carousel(account_id: str, access_token: str, image_urls: List[str], text: str, topic_tag: str = "") -> Optional[str]:
     """カルーセル投稿を試みる。失敗したらNoneを返す"""
     try:
         children = []
@@ -60,14 +60,18 @@ def _try_carousel(account_id: str, access_token: str, image_urls: List[str], tex
 
         time.sleep(15)
 
+        payload = {
+            "media_type": "CAROUSEL",
+            "children": ",".join(children),
+            "text": text,
+            "access_token": access_token,
+        }
+        if topic_tag:
+            payload["topic_tag"] = topic_tag
+
         carousel_res = requests.post(
             f"{THREADS_API_BASE}/{account_id}/threads",
-            data={
-                "media_type": "CAROUSEL",
-                "children": ",".join(children),
-                "text": text,
-                "access_token": access_token,
-            }
+            data=payload,
         )
         if not carousel_res.ok:
             print(f"[WARN] カルーセルコンテナ作成失敗: {carousel_res.status_code} {carousel_res.text}")
@@ -82,16 +86,20 @@ def _try_carousel(account_id: str, access_token: str, image_urls: List[str], tex
         return None
 
 
-def _post_single_image(account_id: str, access_token: str, image_url: str, text: str) -> Optional[str]:
+def _post_single_image(account_id: str, access_token: str, image_url: str, text: str, topic_tag: str = "") -> Optional[str]:
     """単画像投稿"""
+    params = {
+        "media_type": "IMAGE",
+        "image_url": image_url,
+        "text": text,
+        "access_token": access_token,
+    }
+    if topic_tag:
+        params["topic_tag"] = topic_tag
+
     res = requests.post(
         f"{THREADS_API_BASE}/{account_id}/threads",
-        params={
-            "media_type": "IMAGE",
-            "image_url": image_url,
-            "text": text,
-            "access_token": access_token,
-        }
+        params=params,
     )
     res.raise_for_status()
     creation_id = res.json()["id"]
@@ -103,17 +111,18 @@ def post_to_threads(
     access_token: str,
     image_urls: List[str],
     text: str,
-    reply_text: str = ""
+    reply_text: str = "",
+    topic_tag: str = "",
 ) -> Optional[str]:
     """カルーセル投稿を試み、失敗したら単画像にフォールバックする"""
 
     # カルーセル投稿を試みる
-    post_id = _try_carousel(account_id, access_token, image_urls, text)
+    post_id = _try_carousel(account_id, access_token, image_urls, text, topic_tag)
 
     # 失敗したら1枚目の画像で単画像投稿
     if not post_id:
         print("[INFO] 単画像投稿にフォールバック")
-        post_id = _post_single_image(account_id, access_token, image_urls[0], text)
+        post_id = _post_single_image(account_id, access_token, image_urls[0], text, topic_tag)
         print(f"[INFO] 投稿完了: post_id={post_id}")
 
     # リプライ追加
