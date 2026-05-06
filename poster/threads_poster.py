@@ -16,6 +16,21 @@ def _publish(account_id: str, access_token: str, creation_id: str) -> Optional[s
     return res.json().get("id")
 
 
+def post_text_only(account_id: str, access_token: str, text: str) -> Optional[str]:
+    """テキストのみ投稿"""
+    res = requests.post(
+        f"{THREADS_API_BASE}/{account_id}/threads",
+        params={
+            "media_type": "TEXT",
+            "text": text,
+            "access_token": access_token,
+        }
+    )
+    res.raise_for_status()
+    creation_id = res.json()["id"]
+    return _publish(account_id, access_token, creation_id)
+
+
 def _post_reply(account_id: str, access_token: str, reply_to_id: str, text: str) -> Optional[str]:
     """テキストリプライを投稿する"""
     container_res = requests.post(

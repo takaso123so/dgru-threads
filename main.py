@@ -7,7 +7,7 @@ from config import THREADS_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
 from fetcher.image_fetcher import get_product_image_url
 from generator.content_generator import generate_post_text
-from poster.threads_poster import post_to_threads
+from poster.threads_poster import post_to_threads, post_text_only
 
 LOG_PATH = "logs/post_log.csv"
 CATEGORY_URLS = {
@@ -50,33 +50,43 @@ def run(breed: str):
         return
     print(f"[INFO] 商品選定: {[p['item_name'] for p in products]}")
 
-    # 2. 各商品の画像URLを取得
-    image_urls = []
-    for p in products:
-        url = get_product_image_url(p["url"])
-        if url:
-            image_urls.append(url)
-            print(f"[INFO] 画像取得: {url}")
-        else:
-            print(f"[WARN] 画像取得失敗: {p['url']}")
-
-    if len(image_urls) < 2:
-        print("[ERROR] 画像が2枚未満のため投稿をスキップ")
-        return
-
-    # 3. 投稿文生成
-    text = generate_post_text(breed=breed)
+    # 2. 投稿文生成（画像の要否を先に判定）
+    text, with_image = generate_post_text(breed=breed)
     print(f"[INFO] 生成された投稿文:\n{text}\n")
+    print(f"[INFO] 画像添付: {with_image}")
 
-    # 4. カルーセル投稿（リプライにカテゴリURL）
-    post_id = post_to_threads(
-        account_id=account["account_id"],
-        access_token=account["access_token"],
-        image_urls=image_urls,
-        text=text,
-        reply_text=CATEGORY_URLS.get(breed, ""),
-        topic_tag=TOPIC_TAGS.get(breed, ""),
-    )
+    # 3. 画像が必要な場合のみ取得
+    image_urls = []
+    if with_image:
+        for p in products:
+            url = get_product_image_url(p["url"])
+            if url:
+                image_urls.append(url)
+                print(f"[INFO] 画像取得: {url}")
+            else:
+                print(f"[WARN] 画像取得失敗: {p['url']}")
+
+        if len(image_urls) < 2:
+            print("[ERROR] 画像が2枚未満のため投稿をスキップ")
+            return
+
+    # 4. 投稿（画像あり or テキストのみ）
+    if with_image:
+        post_id = post_to_threads(
+            account_id=account["account_id"],
+            access_token=account["access_token"],
+            image_urls=image_urls,
+            text=text,
+            reply_text=CATEGORY_URLS.get(breed, ""),
+            topic_tag=TOPIC_TAGS.get(breed, ""),
+        )
+    else:
+        print("[INFO] テキストのみ投稿")
+        post_id = post_text_only(
+            account_id=account["account_id"],
+            access_token=account["access_token"],
+            text=text,
+        )
 
     # 5. ログ記録
     if post_id:
