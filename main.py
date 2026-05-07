@@ -43,31 +43,38 @@ def run(breed: str):
         print(f"[ERROR] アカウント未設定: {breed}")
         return
 
-    # 1. 商品を4件ランダム取得
-    products = get_random_products(breed, n=4, log_path=LOG_PATH)
-    if not products:
-        print("[ERROR] 投稿可能な商品がありません")
-        return
-    print(f"[INFO] 商品選定: {[p['item_name'] for p in products]}")
-
-    # 2. 投稿文生成（画像の要否を先に判定）
+    # 1. 投稿文生成（画像の要否を先に判定）
     text, with_image = generate_post_text(breed=breed)
     print(f"[INFO] 生成された投稿文:\n{text}\n")
     print(f"[INFO] 画像添付: {with_image}")
 
-    # 3. 画像が必要な場合のみ取得
+    # 2. 商品・画像取得（画像が必要な場合は多めに候補を取得して4枚確保）
     image_urls = []
+    products = []
     if with_image:
-        for p in products:
+        candidates = get_random_products(breed, n=8, log_path=LOG_PATH)
+        if not candidates:
+            print("[ERROR] 投稿可能な商品がありません")
+            return
+        for p in candidates:
             url = get_product_image_url(p["url"])
             if url:
                 image_urls.append(url)
+                products.append(p)
                 print(f"[INFO] 画像取得: {url}")
+                if len(image_urls) == 4:
+                    break
             else:
                 print(f"[WARN] 画像取得失敗: {p['url']}")
 
         if len(image_urls) < 2:
             print("[ERROR] 画像が2枚未満のため投稿をスキップ")
+            return
+        print(f"[INFO] 商品選定: {[p['item_name'] for p in products]}")
+    else:
+        products = get_random_products(breed, n=4, log_path=LOG_PATH)
+        if not products:
+            print("[ERROR] 投稿可能な商品がありません")
             return
 
     # 4. 投稿（画像あり or テキストのみ）
