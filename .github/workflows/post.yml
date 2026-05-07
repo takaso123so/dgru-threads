@@ -1,8 +1,6 @@
 name: Threads Auto Post
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'  # 15分ごと（テスト用）
   workflow_dispatch:
     inputs:
       breed:
