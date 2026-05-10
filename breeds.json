@@ -1,16 +1,19 @@
 {
   "shiba": {
     "name_ja": "柴犬",
+    "keywords": ["柴"],
     "category_url": "https://dgru.base.shop/categories/7018493",
     "topic_tag": "柴犬"
   },
   "schnauzer": {
     "name_ja": "シュナウザー",
+    "keywords": ["シュナウザー", "schnauzer"],
     "category_url": "https://dgru.base.shop/categories/6987466",
     "topic_tag": "シュナウザー"
   },
   "cavalier": {
     "name_ja": "キャバリア",
+    "keywords": ["キャバリア", "cavalier"],
     "category_url": "https://dgru.base.shop/categories/7026545",
     "topic_tag": "キャバリア"
   }

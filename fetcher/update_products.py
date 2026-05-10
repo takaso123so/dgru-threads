@@ -146,17 +146,25 @@ def main():
             continue
 
         category_url = BREEDS[breed]["category_url"]
+        keywords = [k.lower() for k in BREEDS[breed].get("keywords", [])]
+
         print(f"\n[{breed}] 商品リスト取得中...")
         products = fetch_products_from_category(category_url)
-        print(f"  取得件数: {len(products)} 件")
+        print(f"  取得件数（フィルタ前）: {len(products)} 件")
 
         if not products:
             print(f"  [WARN] 商品が取得できませんでした。CSVは更新しません")
             continue
 
-        for p in products:
-            print(f"    - {p['item_name']} ({p['price']}円) {p['url']}")
+        # 犬種キーワードでフィルタリング
+        if keywords:
+            filtered = [p for p in products if any(k in p["item_name"].lower() for k in keywords)]
+            removed = len(products) - len(filtered)
+            if removed:
+                print(f"  フィルタで除外: {removed} 件（他犬種の商品）")
+            products = filtered
 
+        print(f"  保存件数: {len(products)} 件")
         update_csv(breed, products)
 
     print("\n完了")
