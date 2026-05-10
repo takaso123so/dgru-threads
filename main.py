@@ -3,38 +3,31 @@ import os
 import sys
 from datetime import datetime
 
-from config import THREADS_ACCOUNTS
+from config import BREEDS, THREADS_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
 from fetcher.image_fetcher import get_product_image_url
 from generator.content_generator import generate_post_text
 from poster.threads_poster import post_to_threads, post_text_only
 
 LOG_PATH = "logs/post_log.csv"
-CATEGORY_URLS = {
-    "shiba": "https://dgru.base.shop/categories/7018493",
-    "schnauzer": "https://dgru.base.shop/categories/6987466",
-}
-TOPIC_TAGS = {
-    "shiba": "柴犬",
-    "schnauzer": "シュナウザー",
-}
 
 
-def log_post(breed: str, products: list, post_id: str):
+def log_post(breed: str, products: list, post_id: str, pattern_name: str = "", with_image: bool = True):
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     file_exists = os.path.exists(LOG_PATH)
     with open(LOG_PATH, "a", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["posted_at", "breed", "item_name", "url", "post_id"])
+        writer = csv.DictWriter(f, fieldnames=["posted_at", "breed", "pattern_name", "with_image", "post_id", "item_names"])
         if not file_exists:
             writer.writeheader()
-        for p in products:
-            writer.writerow({
-                "posted_at": datetime.now().isoformat(),
-                "breed": breed,
-                "item_name": p["item_name"],
-                "url": p["url"],
-                "post_id": post_id,
-            })
+        item_names = ",".join(p["item_name"] for p in products) if products else ""
+        writer.writerow({
+            "posted_at": datetime.now().isoformat(),
+            "breed": breed,
+            "pattern_name": pattern_name,
+            "with_image": with_image,
+            "post_id": post_id,
+            "item_names": item_names,
+        })
 
 
 def run(breed: str):
@@ -43,10 +36,14 @@ def run(breed: str):
         print(f"[ERROR] アカウント未設定: {breed}")
         return
 
+    breed_info = BREEDS[breed]
+    category_url = breed_info["category_url"]
+    topic_tag = breed_info["topic_tag"]
+
     # 1. 投稿文生成（画像の要否を先に判定）
-    text, with_image = generate_post_text(breed=breed)
+    text, with_image, pattern_name = generate_post_text(breed=breed)
     print(f"[INFO] 生成された投稿文:\n{text}\n")
-    print(f"[INFO] 画像添付: {with_image}")
+    print(f"[INFO] パターン: {pattern_name} / 画像添付: {with_image}")
 
     # 2. 商品・画像取得（画像が必要な場合は多めに候補を取得して4枚確保）
     image_urls = []
@@ -77,15 +74,15 @@ def run(breed: str):
             print("[ERROR] 投稿可能な商品がありません")
             return
 
-    # 4. 投稿（画像あり or テキストのみ）
+    # 3. 投稿（画像あり or テキストのみ）
     if with_image:
         post_id = post_to_threads(
             account_id=account["account_id"],
             access_token=account["access_token"],
             image_urls=image_urls,
             text=text,
-            reply_text=CATEGORY_URLS.get(breed, ""),
-            topic_tag=TOPIC_TAGS.get(breed, ""),
+            reply_text=category_url,
+            topic_tag=topic_tag,
         )
     else:
         print("[INFO] テキストのみ投稿")
@@ -95,11 +92,14 @@ def run(breed: str):
             text=text,
         )
 
-    # 5. ログ記録
+    # 4. ログ記録
     if post_id:
-        log_post(breed, products, post_id)
+        log_post(breed, products, post_id, pattern_name, with_image)
 
 
 if __name__ == "__main__":
-    breed = sys.argv[1] if len(sys.argv) > 1 else "shiba"
-    run(breed)
+    target = sys.argv[1] if len(sys.argv) > 1 else "all"
+    breeds_to_run = list(BREEDS.keys()) if target == "all" else [target]
+    for b in breeds_to_run:
+        print(f"\n===== {b} =====")
+        run(b)

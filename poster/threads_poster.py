@@ -68,7 +68,7 @@ def _try_carousel(account_id: str, access_token: str, image_urls: List[str], tex
                 }
             )
             if not res.ok:
-                print(f"[WARN] カルーセルアイテム作成失敗: {res.status_code} {res.text}")
+                print(f"[WARN] カルーセルアイテム作成失敗: {res.status_code}")
                 return None
             children.append(res.json()["id"])
             print(f"[INFO] カルーセルアイテム作成: {children[-1]}")
@@ -89,7 +89,7 @@ def _try_carousel(account_id: str, access_token: str, image_urls: List[str], tex
             data=payload,
         )
         if not carousel_res.ok:
-            print(f"[WARN] カルーセルコンテナ作成失敗: {carousel_res.status_code} {carousel_res.text}")
+            print(f"[WARN] カルーセルコンテナ作成失敗: {carousel_res.status_code}")
             return None
 
         carousel_id = carousel_res.json()["id"]

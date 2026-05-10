@@ -1,13 +1,8 @@
 import random
 import anthropic
-from config import CLAUDE_API_KEY
+from config import CLAUDE_API_KEY, BREEDS
 
 client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
-
-BREED_NAMES = {
-    "shiba": "柴犬",
-    "schnauzer": "シュナウザー",
-}
 
 PATTERNS = [
     # A: 超短文系（DGRUアパレルに紐づく）
@@ -69,9 +64,9 @@ SYSTEM_PROMPT = """
 """
 
 
-def generate_post_text(breed: str = "柴犬") -> tuple:
-    """投稿文と画像添付フラグを返す。戻り値: (text, with_image)"""
-    breed_ja = BREED_NAMES.get(breed, breed)
+def generate_post_text(breed: str = "shiba") -> tuple:
+    """投稿文・画像フラグ・パターン名を返す。戻り値: (text, with_image, pattern_name)"""
+    breed_ja = BREEDS.get(breed, {}).get("name_ja", breed)
     pattern = random.choice(PATTERNS)
 
     prompt = f"""犬種：{breed_ja}
@@ -89,4 +84,4 @@ def generate_post_text(breed: str = "柴犬") -> tuple:
 
     text = message.content[0].text.strip()
     lines = [l for l in text.splitlines() if not l.startswith("#")]
-    return "\n".join(lines).strip(), pattern["with_image"]
+    return "\n".join(lines).strip(), pattern["with_image"], pattern["name"]

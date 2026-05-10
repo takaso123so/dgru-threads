@@ -1,23 +1,18 @@
-name: Threads Auto Post
+name: Fetch Threads Insights
 
 on:
   workflow_dispatch:
-    inputs:
-      breed:
-        description: '投稿する犬種キー（breeds.jsonのkey、またはall）'
-        default: 'all'
 
 jobs:
-  post:
+  fetch:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -29,7 +24,7 @@ jobs:
           path: logs/
         continue-on-error: true
 
-      - name: Post to Threads
+      - name: Fetch insights
         env:
           CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
           # 犬種を追加したら下に同じ形式で追記する
@@ -39,7 +34,7 @@ jobs:
           SCHNAUZER_ACCESS_TOKEN: ${{ secrets.SCHNAUZER_ACCESS_TOKEN }}
           CAVALIER_ACCOUNT_ID: ${{ secrets.CAVALIER_ACCOUNT_ID }}
           CAVALIER_ACCESS_TOKEN: ${{ secrets.CAVALIER_ACCESS_TOKEN }}
-        run: python main.py ${{ github.event.inputs.breed }}
+        run: python analyzer/fetch_insights.py
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
