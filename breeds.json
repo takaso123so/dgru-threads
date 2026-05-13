@@ -16,5 +16,11 @@
     "keywords": ["キャバリア", "cavalier"],
     "category_url": "https://dgru.base.shop/categories/7026545",
     "topic_tag": "キャバリア"
+  },
+  "toypoodle": {
+    "name_ja": "トイプードル",
+    "keywords": ["トイプードル", "toypoodle", "toy poodle", "プードル"],
+    "category_url": "https://dgru.base.shop/categories/6987474",
+    "topic_tag": "トイプードル"
   }
 }

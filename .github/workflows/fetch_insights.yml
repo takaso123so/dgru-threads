@@ -34,6 +34,8 @@ jobs:
           SCHNAUZER_ACCESS_TOKEN: ${{ secrets.SCHNAUZER_ACCESS_TOKEN }}
           CAVALIER_ACCOUNT_ID: ${{ secrets.CAVALIER_ACCOUNT_ID }}
           CAVALIER_ACCESS_TOKEN: ${{ secrets.CAVALIER_ACCESS_TOKEN }}
+          TOYPOODLE_ACCOUNT_ID: ${{ secrets.TOYPOODLE_ACCOUNT_ID }}
+          TOYPOODLE_ACCESS_TOKEN: ${{ secrets.TOYPOODLE_ACCESS_TOKEN }}
         run: python analyzer/fetch_insights.py
 
       - name: Upload logs
