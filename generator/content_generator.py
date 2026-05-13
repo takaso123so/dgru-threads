@@ -82,8 +82,8 @@ SYSTEM_PROMPT = """
 """
 
 
-def load_pattern_weights() -> dict[str, float]:
-    """insights.csvからパターン別avg viewsを読み込み重みを計算する"""
+def load_pattern_weights(breed: str) -> dict[str, float]:
+    """犬種ごとのinsightsデータからパターン別重みを計算する"""
     if not os.path.exists(INSIGHTS_PATH):
         return {}
 
@@ -91,6 +91,8 @@ def load_pattern_weights() -> dict[str, float]:
     try:
         with open(INSIGHTS_PATH, encoding="utf-8") as f:
             for row in csv.DictReader(f):
+                if row.get("breed", "").strip() != breed:
+                    continue
                 p = row.get("pattern_name", "").strip()
                 if not p:
                     continue
@@ -132,7 +134,7 @@ def generate_post_text(breed: str = "shiba") -> tuple:
     """投稿文・画像フラグ・パターン名を返す。戻り値: (text, with_image, pattern_name)"""
     breed_ja = BREEDS.get(breed, {}).get("name_ja", breed)
 
-    weights = load_pattern_weights()
+    weights = load_pattern_weights(breed)
     pattern = weighted_choice(PATTERNS, weights)
 
     if weights:
