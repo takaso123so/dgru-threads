@@ -22,5 +22,11 @@
     "keywords": ["トイプードル", "toypoodle", "toy poodle", "プードル", "poodle"],
     "category_url": "https://dgru.base.shop/categories/6987474",
     "topic_tag": "トイプードル"
+  },
+  "chihuahua": {
+    "name_ja": "チワワ",
+    "keywords": ["チワワ", "chihuahua"],
+    "category_url": "https://dgru.base.shop/categories/6987476",
+    "topic_tag": "チワワ"
   }
 }
