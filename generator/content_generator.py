@@ -84,6 +84,11 @@ SYSTEM_PROMPT = """
 - ネガティブ・マイナスな言葉は使わない
 - 指定された犬種名（日本語）を必ず入れる
 - 「DGRU」を使う場合は自然な形で1回のみ
+
+【出力形式】
+- 投稿文のみを出力する
+- 前置き・説明・文字数カウント・構成メモは一切不要
+- 「---」などの区切り線も不要
 """
 
 
@@ -160,5 +165,13 @@ def generate_post_text(breed: str = "shiba") -> tuple:
     )
 
     text = message.content[0].text.strip()
-    lines = [l for l in text.splitlines() if not l.startswith("#")]
+    lines = [
+        l for l in text.splitlines()
+        if not l.startswith("#")
+        and not l.startswith("---")
+        and not l.startswith("【")
+        and "投稿文" not in l
+        and "文字数" not in l
+        and "構成" not in l
+    ]
     return "\n".join(lines).strip(), pattern["with_image"], pattern["name"]
