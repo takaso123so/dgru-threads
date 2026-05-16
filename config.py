@@ -1,7 +1,7 @@
 import json
 import os
 
-CLAUDE_API_KEY = os.environ["CLAUDE_API_KEY"]
+CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "")
 DATA_SOURCE = "csv"
 REPOST_INTERVAL_DAYS = 7
 
