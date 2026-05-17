@@ -6,8 +6,13 @@ on:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -16,13 +21,6 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Download existing logs
-        uses: actions/download-artifact@v4
-        with:
-          name: post-logs
-          path: logs/
-        continue-on-error: true
 
       - name: Fetch insights
         env:
@@ -40,9 +38,13 @@ jobs:
           CHIHUAHUA_ACCESS_TOKEN: ${{ secrets.CHIHUAHUA_ACCESS_TOKEN }}
         run: python analyzer/fetch_insights.py
 
-      - name: Upload logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: post-logs
-          path: logs/
-          retention-days: 90
+      - name: Commit logs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
+          git add logs/
+          git diff --cached --quiet || git commit -m "chore: update insights logs"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git

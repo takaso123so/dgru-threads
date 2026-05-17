@@ -1,10 +1,12 @@
 import csv
 import random
 import os
+import sys
 from datetime import datetime, timedelta
 from typing import List
 
-REPOST_INTERVAL_DAYS = 2
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import REPOST_INTERVAL_DAYS
 
 
 def get_random_products(breed: str, n: int = 4, log_path: str = "logs/post_log.csv") -> List[dict]:
