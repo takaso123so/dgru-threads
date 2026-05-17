@@ -163,6 +163,8 @@ def generate_post_text(breed: str = "shiba") -> tuple:
 パターン：{pattern['name']}
 指示：{pattern['instruction']}
 
+【必須確認】DGRUは飼い主（人間）が着る犬種デザインのアパレルブランドです。犬に着せる服・ドッグウェアではありません。投稿文に「〇〇に似合う」「〇〇が着る」のような犬を主語にした表現を絶対に使わないでください。あくまで「飼い主が着る服」として書いてください。
+
 上記の指示に従って、{breed_ja}オーナー向けのThreads投稿文を1つ書いてください。"""
 
     message = client.messages.create(
