@@ -159,10 +159,18 @@ def generate_post_text(breed: str = "shiba") -> tuple:
         top = sorted(weights.items(), key=lambda x: x[1], reverse=True)[:3]
         print(f"[INFO] パターン重み上位3: {top}")
 
+    # G系パターン（豆知識・雑学）はトピックをランダムで指定して内容の多様性を確保
+    topic_hint = ""
+    if pattern["name"].startswith("G"):
+        topics = BREEDS.get(breed, {}).get("knowledge_topics", [])
+        if topics:
+            topic = random.choice(topics)
+            topic_hint = f"\n今回取り上げる知識のテーマ：{topic}\n"
+
     prompt = f"""犬種：{breed_ja}
 パターン：{pattern['name']}
 指示：{pattern['instruction']}
-
+{topic_hint}
 【必須確認】DGRUは飼い主（人間）が着る犬種デザインのアパレルブランドです。犬に着せる服・ドッグウェアではありません。投稿文に「〇〇に似合う」「〇〇が着る」のような犬を主語にした表現を絶対に使わないでください。あくまで「飼い主が着る服」として書いてください。
 
 上記の指示に従って、{breed_ja}オーナー向けのThreads投稿文を1つ書いてください。"""
