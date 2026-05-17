@@ -44,7 +44,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
           git add logs/
           git diff --cached --quiet || git commit -m "chore: update insights logs"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
