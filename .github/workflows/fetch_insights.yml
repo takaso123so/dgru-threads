@@ -45,5 +45,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add logs/
-          git diff --cached --quiet || git commit -m "chore: update insights logs"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update insights logs"
+            git fetch https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git main
+            git rebase FETCH_HEAD
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
+          fi
