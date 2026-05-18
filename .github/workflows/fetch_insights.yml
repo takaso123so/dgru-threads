@@ -50,6 +50,6 @@ jobs:
           else
             git commit -m "chore: update insights logs"
             git fetch https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git main
-            git rebase FETCH_HEAD
+            git merge -X ours FETCH_HEAD --no-edit
             git push https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
           fi
