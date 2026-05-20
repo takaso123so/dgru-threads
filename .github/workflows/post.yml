@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +42,8 @@ jobs:
           TOYPOODLE_ACCESS_TOKEN: ${{ secrets.TOYPOODLE_ACCESS_TOKEN }}
           CHIHUAHUA_ACCOUNT_ID: ${{ secrets.CHIHUAHUA_ACCOUNT_ID }}
           CHIHUAHUA_ACCESS_TOKEN: ${{ secrets.CHIHUAHUA_ACCESS_TOKEN }}
+          DACHSHUND_ACCOUNT_ID: ${{ secrets.DACHSHUND_ACCOUNT_ID }}
+          DACHSHUND_ACCESS_TOKEN: ${{ secrets.DACHSHUND_ACCESS_TOKEN }}
         run: python main.py ${{ github.event.inputs.breed }}
 
       - name: Commit logs
