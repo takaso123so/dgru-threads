@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+import time
 from collections import defaultdict
 
 import anthropic
@@ -175,12 +176,22 @@ def generate_post_text(breed: str = "shiba") -> tuple:
 
 上記の指示に従って、{breed_ja}オーナー向けのThreads投稿文を1つ書いてください。"""
 
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=200,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    for attempt in range(3):
+        try:
+            message = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=200,
+                system=SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            break
+        except anthropic.OverloadedError:
+            if attempt < 2:
+                wait = 30 * (attempt + 1)
+                print(f"[WARN] API過負荷、{wait}秒後にリトライ ({attempt+1}/3)")
+                time.sleep(wait)
+            else:
+                raise
 
     text = message.content[0].text.strip()
     lines = [
