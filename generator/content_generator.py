@@ -185,8 +185,8 @@ def generate_post_text(breed: str = "shiba") -> tuple:
                 messages=[{"role": "user", "content": prompt}]
             )
             break
-        except anthropic.OverloadedError:
-            if attempt < 2:
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < 2:
                 wait = 30 * (attempt + 1)
                 print(f"[WARN] API過負荷、{wait}秒後にリトライ ({attempt+1}/3)")
                 time.sleep(wait)
