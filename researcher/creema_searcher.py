@@ -1,9 +1,10 @@
+import json
 import random
+import re
 import requests
-from bs4 import BeautifulSoup
 
-CREEMA_SEARCH_URL = "https://www.creema.jp/search"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+CREEMA_SEARCH_URL = "https://www.creema.jp/listing"
+HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
 PRODUCT_KEYWORDS = [
     "雑貨", "グッズ", "マグカップ", "ポーチ", "バッグ",
@@ -13,7 +14,7 @@ PRODUCT_KEYWORDS = [
 
 
 def search_breed_goods(breed_keywords: list[str], n: int = 20) -> list[dict]:
-    """Creemaで犬種グッズを検索してスクレイピングする"""
+    """Creemaで犬種グッズを検索してスクレイピングする（JavaScript埋め込みデータ使用）"""
     results = []
     attempts = 0
     max_attempts = 5
@@ -27,32 +28,29 @@ def search_breed_goods(breed_keywords: list[str], n: int = 20) -> list[dict]:
         try:
             resp = requests.get(
                 CREEMA_SEARCH_URL,
-                params={"q": query, "type": "product"},
+                params={"q": query},
                 headers=HEADERS,
                 timeout=15,
             )
             resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, "html.parser")
 
-            for a in soup.find_all("a", href=True):
-                href = a["href"]
-                if "/items/" not in href:
+            # Extract items array from embedded JS: Creema.data.SearchResult = { items: [...] }
+            match = re.search(r'items:\s*(\[.*?\])(?=,\s*\n)', resp.text, re.DOTALL)
+            if not match:
+                print(f"[WARN] Creema: items配列が見つかりません ({query})")
+                continue
+
+            items = json.loads(match.group(1))
+            for item in items:
+                image_url = item.get("image", "")
+                item_id = item.get("item_id")
+                title = item.get("title", "")
+                if not image_url or not item_id:
                     continue
-                if not href.startswith("http"):
-                    href = f"https://www.creema.jp{href}"
-
-                img = a.find("img")
-                if not img:
-                    continue
-
-                image_url = img.get("src") or img.get("data-src", "")
-                if not image_url or image_url.startswith("data:"):
-                    continue
-
                 results.append({
                     "image_url": image_url,
-                    "source_url": href,
-                    "title": img.get("alt", ""),
+                    "source_url": f"https://www.creema.jp/item/{item_id}",
+                    "title": title,
                     "query": query,
                 })
 

@@ -2,8 +2,8 @@ import random
 import requests
 from bs4 import BeautifulSoup
 
-BASE_SEARCH_URL = "https://base.shop/search"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+BASE_SEARCH_URL = "https://thebase.com/items/search"
+HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
 PRODUCT_KEYWORDS = [
     "雑貨", "グッズ", "マグカップ", "ポーチ", "バッグ",
@@ -16,7 +16,7 @@ def search_breed_goods(breed_keywords: list[str], n: int = 30) -> list[dict]:
     """BASEで犬種グッズを検索してスクレイピングする"""
     results = []
     attempts = 0
-    max_attempts = 5
+    max_attempts = 3
 
     while len(results) < n and attempts < max_attempts:
         attempts += 1
@@ -31,12 +31,17 @@ def search_breed_goods(breed_keywords: list[str], n: int = 30) -> list[dict]:
                 headers=HEADERS,
                 timeout=15,
             )
+            # BASEの検索ページがホームにリダイレクトされた場合はスキップ
+            if "/items/search" not in resp.url:
+                print(f"[WARN] BASE検索がリダイレクト先 {resp.url} に飛ばされました。スキップ")
+                break
+
             resp.raise_for_status()
             soup = BeautifulSoup(resp.text, "html.parser")
 
             for a in soup.find_all("a", href=True):
                 href = a["href"]
-                if "base.shop" not in href and "thebase.in" not in href:
+                if "base.shop" not in href and "thebase" not in href:
                     continue
 
                 img = a.find("img")
@@ -55,7 +60,11 @@ def search_breed_goods(breed_keywords: list[str], n: int = 30) -> list[dict]:
                 })
 
             print(f"[INFO] BASE検索 '{query}': {len(results)}件累計")
+        except requests.exceptions.TooManyRedirects:
+            print(f"[WARN] BASE検索: リダイレクトループ検出。BASEの検索機能が廃止された可能性があります")
+            break
         except Exception as e:
             print(f"[WARN] BASE検索失敗 ({query}): {e}")
+            break
 
     return results
