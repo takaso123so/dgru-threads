@@ -144,20 +144,23 @@ def run_curation(breed: str):
         print(f"[ERROR] 日本語キーワードが見つかりません: {breed}")
         return
 
-    from researcher.google_searcher import search_breed_goods as google_search, group_by_shop, QuotaExceededError
     from researcher.base_searcher import search_breed_goods as base_search
+    from researcher.minne_searcher import search_breed_goods as minne_search
+    from researcher.creema_searcher import search_breed_goods as creema_search
+    from researcher.google_searcher import group_by_shop
     from researcher.image_validator import get_valid_images
 
-    # 1. 候補画像を取得（Google CSE → クォータ超過時はBASEにフォールバック）
-    try:
-        print(f"[INFO] Google検索開始: {breed_ja}")
-        candidates = google_search(breed_keywords, n=30)
-        print(f"[INFO] Google検索完了: {len(candidates)}件")
-    except QuotaExceededError:
-        print("[WARN] Google CSEクォータ超過 → BASEにフォールバック")
-        candidates = base_search(breed_keywords, n=30)
-        print(f"[INFO] BASE検索完了: {len(candidates)}件")
+    # 1. BASE・minne・Creema から並行して候補画像を収集
+    candidates = []
+    for name, fn in [("BASE", base_search), ("minne", minne_search), ("Creema", creema_search)]:
+        try:
+            items = fn(breed_keywords, n=15)
+            print(f"[INFO] {name}検索完了: {len(items)}件")
+            candidates.extend(items)
+        except Exception as e:
+            print(f"[WARN] {name}検索失敗: {e}")
 
+    print(f"[INFO] 候補合計: {len(candidates)}件")
     if not candidates:
         print("[ERROR] 候補画像が取得できませんでした")
         return
