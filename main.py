@@ -2,7 +2,6 @@ import csv
 import os
 import sys
 from datetime import datetime
-from urllib.parse import urlparse
 
 from config import BREEDS, THREADS_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
@@ -50,14 +49,6 @@ def log_curation_post(breed: str, images: list, post_id: str, pattern_name: str)
             "source_url": source_url,
         })
 
-
-def _extract_shop_url(source_url: str) -> str:
-    """ソースURLからショップのルートURLを返す"""
-    try:
-        parsed = urlparse(source_url)
-        return f"{parsed.scheme}://{parsed.netloc}"
-    except Exception:
-        return source_url
 
 
 def _is_japanese(s: str) -> bool:
@@ -184,7 +175,7 @@ def run_curation(breed: str):
         validated = get_valid_images(group, breed_ja, max_images=4)
         if len(validated) >= 2:
             valid_images = validated
-            shop_url = _extract_shop_url(group[0]["source_url"])
+            shop_url = valid_images[0]["source_url"]
             print(f"[INFO] ショップ採用: {domain} / 有効画像: {len(valid_images)}枚")
             break
 

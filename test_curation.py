@@ -19,14 +19,6 @@ def _is_japanese(s: str) -> bool:
     return any("぀" <= c <= "鿿" for c in s)
 
 
-def _extract_shop_url(source_url: str) -> str:
-    from urllib.parse import urlparse
-    try:
-        parsed = urlparse(source_url)
-        return f"{parsed.scheme}://{parsed.netloc}"
-    except Exception:
-        return source_url
-
 
 def test(breed: str = "shiba"):
     breed_info = BREEDS.get(breed)
@@ -96,7 +88,7 @@ def test(breed: str = "shiba"):
     text, pattern_name = generate_curation_text(breed=breed)
     print(f"パターン: {pattern_name}")
     print(f"投稿文:\n{text}")
-    print(f"\n返信URL: {_extract_shop_url(valid_images[0]['source_url'])}")
+    print(f"\n返信URL: {valid_images[0]['source_url']}")
     print("\n=== テスト完了（Threadsへの投稿なし） ===")
 
 
