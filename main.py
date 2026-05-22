@@ -82,7 +82,11 @@ def run(breed: str):
     image_urls = []
     products = []
     if with_image:
-        candidates = get_random_products(breed, n=8, log_path=LOG_PATH)
+        try:
+            candidates = get_random_products(breed, n=8, log_path=LOG_PATH)
+        except FileNotFoundError as e:
+            print(f"[ERROR] 商品CSVが見つかりません（update_products.ymlを実行してください）: {e}")
+            return
         if not candidates:
             print("[ERROR] 投稿可能な商品がありません")
             return
@@ -129,7 +133,7 @@ def run(breed: str):
 
 
 def run_curation(breed: str):
-    """キュレーション投稿（Google検索 + Claude Vision検証）"""
+    """キュレーション投稿（BASE/minne/Creema スクレイピング + Claude Vision検証）"""
     account = THREADS_ACCOUNTS.get(breed)
     if not account:
         print(f"[ERROR] アカウント未設定: {breed}")
@@ -191,12 +195,12 @@ def run_curation(breed: str):
     image_urls = [img["image_url"] for img in valid_images]
     print(f"[INFO] 返信URL: {shop_url}")
 
-    # 3. 投稿文生成
+    # 4. 投稿文生成
     text, pattern_name = generate_curation_text(breed=breed)
     print(f"[INFO] キュレーション投稿文:\n{text}\n")
     print(f"[INFO] パターン: {pattern_name}")
 
-    # 4. 投稿
+    # 5. 投稿
     post_id = post_to_threads(
         account_id=account["account_id"],
         access_token=account["access_token"],
@@ -206,7 +210,7 @@ def run_curation(breed: str):
         topic_tag=topic_tag,
     )
 
-    # 5. ログ記録
+    # 6. ログ記録
     if post_id:
         log_curation_post(breed, valid_images, post_id, pattern_name)
 
