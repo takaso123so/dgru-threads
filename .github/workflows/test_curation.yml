@@ -1,0 +1,32 @@
+name: Test Curation (Dry Run)
+
+on:
+  workflow_dispatch:
+    inputs:
+      breed:
+        description: 'テストする犬種キー（例: shiba, chihuahua）'
+        default: 'shiba'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run curation dry run
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_CSE_ID: ${{ secrets.GOOGLE_CSE_ID }}
+        run: python test_curation.py ${{ github.event.inputs.breed }}
