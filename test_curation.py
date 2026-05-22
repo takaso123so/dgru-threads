@@ -1,20 +1,31 @@
 """
 キュレーション投稿のドライランテスト（Threadsへの投稿なし）
 使い方:
-  GOOGLE_API_KEY=xxx GOOGLE_CSE_ID=xxx CLAUDE_API_KEY=xxx python3 test_curation.py shiba
+  CLAUDE_API_KEY=xxx python3 test_curation.py shiba
 """
 
 import sys
 
 from config import BREEDS
-from researcher.google_searcher import search_breed_goods, group_by_shop, QuotaExceededError
 from researcher.base_searcher import search_breed_goods as base_search
+from researcher.minne_searcher import search_breed_goods as minne_search
+from researcher.creema_searcher import search_breed_goods as creema_search
+from researcher.google_searcher import group_by_shop
 from researcher.image_validator import get_valid_images
 from generator.content_generator import generate_curation_text
 
 
 def _is_japanese(s: str) -> bool:
     return any("぀" <= c <= "鿿" for c in s)
+
+
+def _extract_shop_url(source_url: str) -> str:
+    from urllib.parse import urlparse
+    try:
+        parsed = urlparse(source_url)
+        return f"{parsed.scheme}://{parsed.netloc}"
+    except Exception:
+        return source_url
 
 
 def test(breed: str = "shiba"):
@@ -29,16 +40,18 @@ def test(breed: str = "shiba"):
     print(f"\n=== テスト開始: {breed_ja} ===")
     print(f"検索キーワード: {breed_keywords}\n")
 
-    # 1. 画像検索
+    # 1. BASE・minne・Creema から候補画像を収集
     print("--- Step 1: 画像検索 ---")
-    try:
-        candidates = search_breed_goods(breed_keywords, n=30)
-        print(f"Google検索結果: {len(candidates)}件\n")
-    except QuotaExceededError:
-        print("[WARN] Google CSEクォータ超過 → BASEにフォールバック")
-        candidates = base_search(breed_keywords, n=30)
-        print(f"BASE検索結果: {len(candidates)}件\n")
+    candidates = []
+    for name, fn in [("BASE", base_search), ("minne", minne_search), ("Creema", creema_search)]:
+        try:
+            items = fn(breed_keywords, n=15)
+            print(f"{name}検索完了: {len(items)}件")
+            candidates.extend(items)
+        except Exception as e:
+            print(f"[WARN] {name}検索失敗: {e}")
 
+    print(f"候補合計: {len(candidates)}件\n")
     if not candidates:
         print("[ERROR] 候補が0件でした")
         return
@@ -83,6 +96,7 @@ def test(breed: str = "shiba"):
     text, pattern_name = generate_curation_text(breed=breed)
     print(f"パターン: {pattern_name}")
     print(f"投稿文:\n{text}")
+    print(f"\n返信URL: {_extract_shop_url(valid_images[0]['source_url'])}")
     print("\n=== テスト完了（Threadsへの投稿なし） ===")
 
 
