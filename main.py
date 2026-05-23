@@ -3,11 +3,12 @@ import os
 import sys
 from datetime import datetime
 
-from config import BREEDS, THREADS_ACCOUNTS
+from config import BREEDS, THREADS_ACCOUNTS, TWITTER_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
 from fetcher.image_fetcher import get_product_image_url
 from generator.content_generator import generate_post_text, generate_curation_text
 from poster.threads_poster import post_to_threads, post_text_only
+from poster.twitter_poster import post_to_twitter
 
 LOG_PATH = "logs/post_log.csv"
 CURATION_LOG_PATH = "logs/curation_log.csv"
@@ -55,16 +56,22 @@ def _is_japanese(s: str) -> bool:
     return any("぀" <= c <= "鿿" for c in s)
 
 
-def run(breed: str):
-    """DGRU商品の投稿（既存フロー）"""
-    account = THREADS_ACCOUNTS.get(breed)
-    if not account:
-        print(f"[ERROR] アカウント未設定: {breed}")
-        return
-
+def run(breed: str, platform: str = "threads"):
+    """DGRU商品の投稿"""
     breed_info = BREEDS[breed]
     category_url = breed_info["category_url"]
     topic_tag = breed_info["topic_tag"]
+
+    if platform == "twitter":
+        account = TWITTER_ACCOUNTS.get(breed)
+        if not account or not account.get("access_token"):
+            print(f"[ERROR] Twitter アカウント未設定: {breed}")
+            return
+    else:
+        account = THREADS_ACCOUNTS.get(breed)
+        if not account:
+            print(f"[ERROR] Threads アカウント未設定: {breed}")
+            return
 
     text, with_image, pattern_name = generate_post_text(breed=breed)
     print(f"[INFO] 生成された投稿文:\n{text}\n")
@@ -102,7 +109,15 @@ def run(breed: str):
             print("[ERROR] 投稿可能な商品がありません")
             return
 
-    if with_image:
+    if platform == "twitter":
+        post_id = post_to_twitter(
+            access_token=account["access_token"],
+            access_token_secret=account["access_token_secret"],
+            image_urls=image_urls if with_image else [],
+            text=text,
+            reply_text=category_url if with_image else "",
+        )
+    elif with_image:
         post_id = post_to_threads(
             account_id=account["account_id"],
             access_token=account["access_token"],
@@ -123,12 +138,18 @@ def run(breed: str):
         log_post(breed, products, post_id, pattern_name, with_image)
 
 
-def run_curation(breed: str):
+def run_curation(breed: str, platform: str = "threads"):
     """キュレーション投稿（BASE/minne/Creema スクレイピング + Claude Vision検証）"""
-    account = THREADS_ACCOUNTS.get(breed)
-    if not account:
-        print(f"[ERROR] アカウント未設定: {breed}")
-        return
+    if platform == "twitter":
+        account = TWITTER_ACCOUNTS.get(breed)
+        if not account or not account.get("access_token"):
+            print(f"[ERROR] Twitter アカウント未設定: {breed}")
+            return
+    else:
+        account = THREADS_ACCOUNTS.get(breed)
+        if not account:
+            print(f"[ERROR] Threads アカウント未設定: {breed}")
+            return
 
     breed_info = BREEDS[breed]
     breed_ja = breed_info["name_ja"]
@@ -192,14 +213,23 @@ def run_curation(breed: str):
     print(f"[INFO] パターン: {pattern_name}")
 
     # 5. 投稿
-    post_id = post_to_threads(
-        account_id=account["account_id"],
-        access_token=account["access_token"],
-        image_urls=image_urls,
-        text=text,
-        reply_text=shop_url,
-        topic_tag=topic_tag,
-    )
+    if platform == "twitter":
+        post_id = post_to_twitter(
+            access_token=account["access_token"],
+            access_token_secret=account["access_token_secret"],
+            image_urls=image_urls,
+            text=text,
+            reply_text=shop_url,
+        )
+    else:
+        post_id = post_to_threads(
+            account_id=account["account_id"],
+            access_token=account["access_token"],
+            image_urls=image_urls,
+            text=text,
+            reply_text=shop_url,
+            topic_tag=topic_tag,
+        )
 
     # 6. ログ記録
     if post_id:
@@ -209,13 +239,17 @@ def run_curation(breed: str):
 if __name__ == "__main__":
     target = sys.argv[1] if len(sys.argv) > 1 else "all"
     post_type = sys.argv[2] if len(sys.argv) > 2 else "all"
+    platform = sys.argv[3] if len(sys.argv) > 3 else "threads"
 
+    platforms = ["threads", "twitter"] if platform == "all" else [platform]
     breeds_to_run = list(BREEDS.keys()) if target == "all" else [target]
+
     for b in breeds_to_run:
-        print(f"\n===== {b} ({post_type}) =====")
-        if post_type in ("dgru", "all"):
-            print(f"--- DGRU投稿 ---")
-            run(b)
-        if post_type in ("curation", "all"):
-            print(f"--- キュレーション投稿 ---")
-            run_curation(b)
+        for pf in platforms:
+            print(f"\n===== {b} ({post_type}) [{pf}] =====")
+            if post_type in ("dgru", "all"):
+                print(f"--- DGRU投稿 ---")
+                run(b, platform=pf)
+            if post_type in ("curation", "all"):
+                print(f"--- キュレーション投稿 ---")
+                run_curation(b, platform=pf)

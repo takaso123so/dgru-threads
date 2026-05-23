@@ -13,9 +13,13 @@ with open(os.path.join(os.path.dirname(__file__), "breeds.json"), encoding="utf-
 BREEDS: dict[str, dict] = {}
 THREADS_ACCOUNTS: dict[str, dict] = {}
 
+TWITTER_ACCOUNTS: dict[str, dict] = {}
+
 for _key, _info in _breeds_json.items():
     _account_id = os.environ.get(f"{_key.upper()}_ACCOUNT_ID", "")
     _access_token = os.environ.get(f"{_key.upper()}_ACCESS_TOKEN", "")
+    _tw_access_token = os.environ.get(f"{_key.upper()}_TW_ACCESS_TOKEN", "")
+    _tw_access_secret = os.environ.get(f"{_key.upper()}_TW_ACCESS_SECRET", "")
     BREEDS[_key] = {
         **_info,
         "account_id": _account_id,
@@ -24,4 +28,8 @@ for _key, _info in _breeds_json.items():
     THREADS_ACCOUNTS[_key] = {
         "account_id": _account_id,
         "access_token": _access_token,
+    }
+    TWITTER_ACCOUNTS[_key] = {
+        "access_token": _tw_access_token,
+        "access_token_secret": _tw_access_secret,
     }
