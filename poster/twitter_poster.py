@@ -35,8 +35,13 @@ def post_to_twitter(
         resp = client.create_tweet(text=text)
         tweet_id = str(resp.data["id"])
         print(f"[INFO] Twitter 投稿完了: tweet_id={tweet_id}")
+    except tweepy.errors.Unauthorized as e:
+        print(f"[ERROR] Twitter 認証エラー (401): {e}")
+        print(f"[ERROR] APIキー先頭4文字: {TWITTER_API_KEY[:4] if TWITTER_API_KEY else '未設定'}")
+        print(f"[ERROR] AccessToken先頭4文字: {access_token[:4] if access_token else '未設定'}")
+        return None
     except Exception as e:
-        print(f"[ERROR] Twitter 投稿失敗: {e}")
+        print(f"[ERROR] Twitter 投稿失敗: {type(e).__name__}: {e}")
         return None
 
     # 返信にURL
