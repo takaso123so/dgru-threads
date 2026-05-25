@@ -1,6 +1,8 @@
 import os
+from io import BytesIO
 from typing import Optional
 
+import requests
 import tweepy
 
 TWITTER_API_KEY = os.environ.get("TWITTER_API_KEY", "")
@@ -16,6 +18,30 @@ def _get_client(access_token: str, access_token_secret: str) -> tweepy.Client:
     )
 
 
+def _get_api(access_token: str, access_token_secret: str) -> tweepy.API:
+    auth = tweepy.OAuth1UserHandler(
+        consumer_key=TWITTER_API_KEY,
+        consumer_secret=TWITTER_API_SECRET,
+        access_token=access_token,
+        access_token_secret=access_token_secret,
+    )
+    return tweepy.API(auth)
+
+
+def _upload_images(api: tweepy.API, image_urls: list[str]) -> list[str]:
+    media_ids = []
+    for url in image_urls[:4]:
+        try:
+            resp = requests.get(url, timeout=10)
+            resp.raise_for_status()
+            media = api.media_upload(filename="image.jpg", file=BytesIO(resp.content))
+            media_ids.append(str(media.media_id))
+            print(f"[INFO] 画像アップロード完了: media_id={media.media_id}")
+        except Exception as e:
+            print(f"[WARN] 画像アップロード失敗: {url}: {e}")
+    return media_ids
+
+
 def post_to_twitter(
     access_token: str,
     access_token_secret: str,
@@ -23,22 +49,28 @@ def post_to_twitter(
     text: str,
     reply_text: str = "",
 ) -> Optional[str]:
-    """テキストのみツイートを投稿し、返信にURLを添える（画像は現在未対応）"""
     if not TWITTER_API_KEY or not TWITTER_API_SECRET:
         print("[ERROR] TWITTER_API_KEY / TWITTER_API_SECRET が未設定")
         return None
 
     client = _get_client(access_token, access_token_secret)
 
-    # ツイート投稿（テキストのみ）
+    # 画像アップロード
+    media_ids = []
+    if image_urls:
+        api = _get_api(access_token, access_token_secret)
+        media_ids = _upload_images(api, image_urls)
+
+    # ツイート投稿
     try:
-        resp = client.create_tweet(text=text)
+        kwargs = {"text": text}
+        if media_ids:
+            kwargs["media_ids"] = media_ids
+        resp = client.create_tweet(**kwargs)
         tweet_id = str(resp.data["id"])
         print(f"[INFO] Twitter 投稿完了: tweet_id={tweet_id}")
     except tweepy.errors.Unauthorized as e:
         print(f"[ERROR] Twitter 認証エラー (401): {e}")
-        print(f"[ERROR] APIキー先頭4文字: {TWITTER_API_KEY[:4] if TWITTER_API_KEY else '未設定'}")
-        print(f"[ERROR] AccessToken先頭4文字: {access_token[:4] if access_token else '未設定'}")
         return None
     except Exception as e:
         print(f"[ERROR] Twitter 投稿失敗: {type(e).__name__}: {e}")

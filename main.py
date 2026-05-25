@@ -79,7 +79,7 @@ def run(breed: str, platform: str = "threads"):
 
     image_urls = []
     products = []
-    if with_image and platform != "twitter":
+    if with_image:
         try:
             candidates = get_random_products(breed, n=8, log_path=LOG_PATH)
         except FileNotFoundError as e:
