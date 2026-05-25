@@ -2,12 +2,8 @@ name: Threads Auto Post
 
 on:
   schedule:
-    # Threads: 毎日 9時・21時（JST = UTC+9 → UTC 0時・12時）
-    - cron: '0 0 * * *'   # JST 9:00  → Threads
-    - cron: '0 12 * * *'  # JST 21:00 → Threads
-    # Twitter: 毎日 12時・18時（JST = UTC 3時・9時）
-    - cron: '0 3 * * *'   # JST 12:00 → Twitter
-    - cron: '0 9 * * *'   # JST 18:00 → Twitter
+    - cron: '0 0 * * *'   # JST 9:00
+    - cron: '0 12 * * *'  # JST 21:00
   workflow_dispatch:
     inputs:
       breed:
@@ -74,15 +70,8 @@ jobs:
           DACHSHUND_TW_ACCESS_TOKEN: ${{ secrets.DACHSHUND_TW_ACCESS_TOKEN }}
           DACHSHUND_TW_ACCESS_SECRET: ${{ secrets.DACHSHUND_TW_ACCESS_SECRET }}
         run: |
-          # スケジュール実行時はcron時刻でplatformを判定
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            HOUR=$(date -u +%H)
-            if [ "$HOUR" = "03" ] || [ "$HOUR" = "09" ]; then
-              PLATFORM="twitter"
-            else
-              PLATFORM="threads"
-            fi
-            python main.py all all $PLATFORM
+            python main.py all all all
           else
             python main.py ${{ github.event.inputs.breed }} ${{ github.event.inputs.post_type }} ${{ github.event.inputs.platform }}
           fi
