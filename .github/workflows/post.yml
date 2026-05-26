@@ -71,7 +71,7 @@ jobs:
           DACHSHUND_TW_ACCESS_SECRET: ${{ secrets.DACHSHUND_TW_ACCESS_SECRET }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            python main.py all all all
+            python main.py all dgru all
           else
             python main.py ${{ github.event.inputs.breed }} ${{ github.event.inputs.post_type }} ${{ github.event.inputs.platform }}
           fi
