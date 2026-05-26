@@ -11,7 +11,7 @@ on:
         default: 'all'
       post_type:
         description: '投稿タイプ（dgru / curation / all）'
-        default: 'all'
+        default: 'dgru'
       platform:
         description: '投稿先（threads / twitter / all）'
         default: 'threads'
