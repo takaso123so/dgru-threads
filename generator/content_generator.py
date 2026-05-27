@@ -185,12 +185,23 @@ def weighted_choice(patterns: list[dict], weights: dict[str, float]) -> dict:
     return random.choices(patterns, weights=pattern_weights, k=1)[0]
 
 
-def generate_post_text(breed: str = "shiba") -> tuple:
-    """投稿文・画像フラグ・パターン名を返す。戻り値: (text, with_image, pattern_name)"""
+def generate_post_text(breed: str = "shiba", force_image: bool | None = None) -> tuple:
+    """投稿文・画像フラグ・パターン名を返す。戻り値: (text, with_image, pattern_name)
+    force_image=True  → 画像ありパターンのみ選択
+    force_image=False → 画像なしパターンのみ選択
+    force_image=None  → ランダム（従来通り）
+    """
     breed_ja = BREEDS.get(breed, {}).get("name_ja", breed)
 
+    if force_image is True:
+        available = [p for p in PATTERNS if p["with_image"]]
+    elif force_image is False:
+        available = [p for p in PATTERNS if not p["with_image"]]
+    else:
+        available = PATTERNS
+
     weights = load_pattern_weights(breed)
-    pattern = weighted_choice(PATTERNS, weights)
+    pattern = weighted_choice(available, weights)
 
     if weights:
         top = sorted(weights.items(), key=lambda x: x[1], reverse=True)[:3]

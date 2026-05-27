@@ -56,7 +56,7 @@ def _is_japanese(s: str) -> bool:
     return any("぀" <= c <= "鿿" for c in s)
 
 
-def run(breed: str, platform: str = "threads"):
+def run(breed: str, platform: str = "threads", force_image: bool | None = None):
     """DGRU商品の投稿"""
     breed_info = BREEDS[breed]
     category_url = breed_info["category_url"]
@@ -73,7 +73,7 @@ def run(breed: str, platform: str = "threads"):
             print(f"[ERROR] Threads アカウント未設定: {breed}")
             return
 
-    text, with_image, pattern_name = generate_post_text(breed=breed)
+    text, with_image, pattern_name = generate_post_text(breed=breed, force_image=force_image)
     print(f"[INFO] 生成された投稿文:\n{text}\n")
     print(f"[INFO] パターン: {pattern_name} / 画像添付: {with_image}")
 
@@ -247,7 +247,13 @@ if __name__ == "__main__":
     for b in breeds_to_run:
         for pf in platforms:
             print(f"\n===== {b} ({post_type}) [{pf}] =====")
-            if post_type in ("dgru", "all"):
+            if post_type == "dgru_image":
+                print(f"--- DGRU投稿（画像あり固定） ---")
+                run(b, platform=pf, force_image=True)
+            elif post_type == "dgru_text":
+                print(f"--- DGRU投稿（テキストのみ固定） ---")
+                run(b, platform=pf, force_image=False)
+            elif post_type in ("dgru", "all"):
                 print(f"--- DGRU投稿 ---")
                 run(b, platform=pf)
             if post_type in ("curation", "all"):

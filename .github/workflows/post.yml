@@ -71,7 +71,11 @@ jobs:
           DACHSHUND_TW_ACCESS_SECRET: ${{ secrets.DACHSHUND_TW_ACCESS_SECRET }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            python main.py all dgru all
+            if [ "${{ github.event.schedule }}" = "0 12 * * *" ]; then
+              python main.py all dgru_image all   # JST 21:00 - 画像付きDGRU投稿
+            else
+              python main.py all dgru_text all    # JST 9:00  - テキストのみ
+            fi
           else
             python main.py ${{ github.event.inputs.breed }} ${{ github.event.inputs.post_type }} ${{ github.event.inputs.platform }}
           fi
