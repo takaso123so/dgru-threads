@@ -65,6 +65,11 @@ PATTERNS = [
     {"name": "I2_アカウント＋共感", "instruction": "2文構成・80文字以内。1文目：犬種の飼い主として共感できる一言（散歩・グッズ・日常）。2文目：このアカウントでそういった情報を発信していることをさりげなく伝える。", "with_image": False},
     {"name": "I3_アカウント＋ブランド紹介", "instruction": "2文構成・80文字以内。1文目：犬種オーナー向けのアパレルブランドDGRUを運営しているアカウントであることを自然に紹介。2文目：どんな人に見てほしいかを一言で。", "with_image": False},
 
+    # K: 健康・予防情報系（画像なし）
+    {"name": "K1_病気啓発", "instruction": "2文構成・100文字以内。1文目：犬種がかかりやすいとされる病気やリスクを「〜と言われています」「〜の報告があります」など断定しない表現で紹介。2文目：早期発見や日常ケアのヒントを「〜かもしれません」「〜が助けになるとされています」など疑問形や柔らかい表現で。DGRUには触れない。", "with_image": False},
+    {"name": "K2_予防ケア", "instruction": "2文構成・100文字以内。1文目：犬種に多いとされるトラブルや体の特徴から来るリスクを「〜しやすい傾向があるとされ」など柔らかく伝える。2文目：日常でできる予防・ケアを「〜が役立つとされています」「試してみたことはありますか？」などユーザーに問いかける形で。DGRUには触れない。", "with_image": False},
+    {"name": "K3_対話型健康", "instruction": "2文構成・100文字以内。1文目：犬種オーナーが気になりやすい健康・体調の変化や症状を「〜が気になったことはありますか？」という問いかけで。2文目：その背景にある可能性や対処のヒントを「〜という声もあるようです」「獣医師に相談してみるのも一つかもしれません」など断定せず提示。DGRUには触れない。", "with_image": False},
+
     # J: あるある＋アカウント訴求複合系（画像なし・砕けた口調）
     {"name": "J1_あるある→アカウント", "instruction": "2文構成・100文字以内。1文目：犬種オーナーなら共感できる日常のあるある・謎行動・発見を「〜ありませんか」「〜いまだに分からない」「〜毎回面白い」のようなやや砕けたトーンで。2文目：そういう犬種の魅力や情報をこのアカウントでゆるく発信しているという自然な紹介。押しつけがましくなく。DGRUには触れない。", "with_image": False},
     {"name": "J2_話しかけ→アカウント", "instruction": "2文構成・100文字以内。1文目：犬種オーナーへの問いかけ形式で、あるある・謎行動・日常の共感を「〜じゃないですか」「〜だけじゃないですか」のようなやや砕けたトーンで。2文目：そういった犬種の情報やあるあるをこのアカウントで発信しているという一言。DGRUには触れない。", "with_image": False},
@@ -212,13 +217,18 @@ def generate_post_text(breed: str = "shiba", force_image: bool | None = None) ->
         top = sorted(weights.items(), key=lambda x: x[1], reverse=True)[:3]
         print(f"[INFO] パターン重み上位3: {top}")
 
-    # G系パターン（豆知識・雑学）はトピックをランダムで指定して内容の多様性を確保
+    # G系・K系はトピックをランダムで指定して内容の多様性を確保
     topic_hint = ""
     if pattern["name"].startswith("G"):
         topics = BREEDS.get(breed, {}).get("knowledge_topics", [])
         if topics:
             topic = random.choice(topics)
             topic_hint = f"\n今回取り上げる知識のテーマ：{topic}\n"
+    elif pattern["name"].startswith("K"):
+        topics = BREEDS.get(breed, {}).get("health_topics", [])
+        if topics:
+            topic = random.choice(topics)
+            topic_hint = f"\n今回取り上げる健康トピック：{topic}\n"
 
     prompt = f"""犬種：{breed_ja}
 パターン：{pattern['name']}
