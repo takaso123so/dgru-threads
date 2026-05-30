@@ -1,7 +1,9 @@
 import csv
 import os
 import sys
+import time
 from datetime import datetime
+from urllib.parse import urlencode
 
 from config import BREEDS, THREADS_ACCOUNTS, TWITTER_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
@@ -112,8 +114,15 @@ def run(breed: str, platform: str = "threads", force_image: bool | None = None):
     # 画像ありのときだけ返信文を生成してURLと合わせる
     reply_text = ""
     if with_image:
+        utm = urlencode({
+            "utm_source": platform,
+            "utm_medium": "social",
+            "utm_campaign": breed,
+            "utm_content": pattern_name.lower().replace("_", "-"),
+        })
+        url_with_utm = f"{category_url}?{utm}"
         reply_sentence = generate_reply_text(breed, text)
-        reply_text = f"{reply_sentence}\n{category_url}" if reply_sentence else category_url
+        reply_text = f"{reply_sentence}\n{url_with_utm}" if reply_sentence else url_with_utm
 
     if platform == "twitter":
         post_id = post_to_twitter(
@@ -250,7 +259,10 @@ if __name__ == "__main__":
     platforms = ["threads", "twitter"] if platform == "all" else [platform]
     breeds_to_run = list(BREEDS.keys()) if target == "all" else [target]
 
-    for b in breeds_to_run:
+    for i, b in enumerate(breeds_to_run):
+        if i > 0 and len(breeds_to_run) > 1:
+            print(f"[INFO] 次の犬種まで15分待機...")
+            time.sleep(900)
         for pf in platforms:
             print(f"\n===== {b} ({post_type}) [{pf}] =====")
             if post_type == "dgru_image":
