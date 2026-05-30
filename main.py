@@ -6,7 +6,7 @@ from datetime import datetime
 from config import BREEDS, THREADS_ACCOUNTS, TWITTER_ACCOUNTS
 from fetcher.base_fetcher import get_random_products
 from fetcher.image_fetcher import get_product_image_url
-from generator.content_generator import generate_post_text, generate_curation_text
+from generator.content_generator import generate_post_text, generate_curation_text, generate_reply_text
 from poster.threads_poster import post_to_threads, post_text_only
 from poster.twitter_poster import post_to_twitter
 
@@ -109,13 +109,19 @@ def run(breed: str, platform: str = "threads", force_image: bool | None = None):
             print("[ERROR] 投稿可能な商品がありません")
             return
 
+    # 画像ありのときだけ返信文を生成してURLと合わせる
+    reply_text = ""
+    if with_image:
+        reply_sentence = generate_reply_text(breed, text)
+        reply_text = f"{reply_sentence}\n{category_url}" if reply_sentence else category_url
+
     if platform == "twitter":
         post_id = post_to_twitter(
             access_token=account["access_token"],
             access_token_secret=account["access_token_secret"],
             image_urls=image_urls if with_image else [],
             text=text,
-            reply_text=category_url if with_image else "",
+            reply_text=reply_text,
         )
     elif with_image:
         post_id = post_to_threads(
@@ -123,7 +129,7 @@ def run(breed: str, platform: str = "threads", force_image: bool | None = None):
             access_token=account["access_token"],
             image_urls=image_urls,
             text=text,
-            reply_text=category_url,
+            reply_text=reply_text,
             topic_tag=topic_tag,
         )
     else:

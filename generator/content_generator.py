@@ -271,6 +271,43 @@ def generate_post_text(breed: str = "shiba", force_image: bool | None = None) ->
     return "\n".join(lines).strip(), pattern["with_image"], pattern["name"]
 
 
+REPLY_SYSTEM_PROMPT = """
+あなたはDGRUのSNS担当者です。
+直前の投稿文を受けて、そのURLへ自然につなげる返信の一文を書きます。
+
+【ルール】
+- 20〜40文字程度の1文のみ
+- 直前の投稿の内容・トーンに合わせて自然につながる言葉を選ぶ
+- URLへの誘導は押しつけがましくなく、「よかったら」「気になった方は」程度の温度感で
+- 「DGRU」は使っても使わなくてもよい
+- 絵文字は使わない
+- 「皆さん」は使わない
+- 投稿文のみ出力。前置き・説明は不要
+"""
+
+
+def generate_reply_text(breed: str, main_text: str) -> str:
+    """投稿文に関連するリプライの一文を生成する"""
+    breed_ja = BREEDS.get(breed, {}).get("name_ja", breed)
+    prompt = f"""犬種：{breed_ja}
+直前の投稿文：
+{main_text}
+
+この投稿を受けて、DGRUのアイテムページURLへ自然につなげる返信の一文を書いてください。"""
+
+    try:
+        message = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=80,
+            system=REPLY_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return message.content[0].text.strip()
+    except Exception as e:
+        print(f"[WARN] 返信文生成失敗: {e}")
+        return ""
+
+
 CURATION_SYSTEM_PROMPT = """
 あなたは犬好きのためのグッズキュレーターです。
 特定の犬種の飼い主や犬好きに向けて、見つけた可愛いグッズへの共感や驚きを自然な言葉で伝えます。
