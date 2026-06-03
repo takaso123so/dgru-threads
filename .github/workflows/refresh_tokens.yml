@@ -1,0 +1,32 @@
+name: Refresh Threads Tokens
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # 毎月1日 JST 9:00
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      SHIBA_ACCESS_TOKEN: ${{ secrets.SHIBA_ACCESS_TOKEN }}
+      SCHNAUZER_ACCESS_TOKEN: ${{ secrets.SCHNAUZER_ACCESS_TOKEN }}
+      CAVALIER_ACCESS_TOKEN: ${{ secrets.CAVALIER_ACCESS_TOKEN }}
+      TOYPOODLE_ACCESS_TOKEN: ${{ secrets.TOYPOODLE_ACCESS_TOKEN }}
+      CHIHUAHUA_ACCESS_TOKEN: ${{ secrets.CHIHUAHUA_ACCESS_TOKEN }}
+      DACHSHUND_ACCESS_TOKEN: ${{ secrets.DACHSHUND_ACCESS_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests PyNaCl
+
+      - name: Refresh tokens
+        run: python refresh_threads_tokens.py
