@@ -405,3 +405,161 @@ def generate_curation_text(breed: str = "shiba") -> tuple[str, str]:
         and "文字数" not in l
     ]
     return "\n".join(lines).strip(), pattern["name"]
+
+
+# ============================================================
+# しばもちキャラクター投稿（柴犬アカウント専用）
+# ============================================================
+
+SHIBA_CHARACTER_SYSTEM_PROMPT = """
+あなたは「しばもち」です。柴犬アカウントのキャラクターマスコット。
+
+【しばもちの人格】
+- 丸くてふわふわの柴犬。一人称は「ぼく」
+- 性格: 食いしん坊、少し頑固、飼い主思い
+- 人間の行動を柴犬目線で冷静に、でも温かく見ている
+- 口調はやさしく短め
+- 語尾はたまに「だわん」「なのだ」「むふ」を自然に使う（多用しない）
+- 絵文字は使わない
+- 「皆さん」は使わない
+- 押し売りはしない
+
+【投稿ルール】
+- 2〜4行以内
+- 1人に向けて話しかける感覚で書く
+- 重い話題・暗い話題は扱わない
+- DGRUに触れる場合は「うちのブランド（DGRU）」と自然な形で1回のみ
+
+【出力形式】
+投稿文のみ。前置き・説明は一切不要。
+"""
+
+SHIBA_CASUAL_SCENES = [
+    "おやつを待っているとき",
+    "飼い主が出かけていったとき",
+    "雨の日に散歩をキャンセルされたとき",
+    "換毛期で毛がたくさん抜けているとき",
+    "飼い主がスマホばかり見ているとき",
+    "冬の朝、布団から出られない飼い主を見ているとき",
+    "ごはんの時間が少し遅れているとき",
+    "宅急便が来て玄関でそわそわするとき",
+    "飼い主が帰ってきたとき",
+    "公園でほかの犬に出会ったとき",
+    "飼い主が料理しているにおいを追いかけているとき",
+    "お気に入りの場所を取られてしまったとき",
+    "車に乗るとき",
+    "トリミングから帰ってきたとき",
+    "夕方の散歩が近づいてきたとき",
+]
+
+SHIBA_COMIC_SCENES = [
+    "protecting his snack bowl from an imaginary threat, looking very serious",
+    "sitting in the passenger seat staring straight ahead while owner drives",
+    "frozen at the front door on a rainy day, refusing to go outside",
+    "proudly showing off a fresh grooming look",
+    "watching owner cook from the kitchen doorway with intense focus",
+    "sprawled dramatically after a very short walk, claiming total exhaustion",
+    "staring at the clock, waiting for walk time with visible impatience",
+    "caught mid-nap in a surprisingly cozy and ridiculous position",
+    "giving owner a deeply unimpressed look after being woken up",
+    "sitting alone on the sofa looking smug during owner's absence",
+    "discovering owner brought home a new dog toy, inspecting it with suspicion",
+    "hiding behind owner's legs at the vet, trying to look invisible",
+]
+
+
+def _call_claude_shiba(prompt: str, max_tokens: int = 200) -> str:
+    """しばもち専用Claude呼び出し（リトライあり）"""
+    for attempt in range(3):
+        try:
+            message = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=max_tokens,
+                system=SHIBA_CHARACTER_SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return message.content[0].text.strip()
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < 2:
+                wait = 30 * (attempt + 1)
+                print(f"[WARN] API過負荷、{wait}秒後にリトライ ({attempt+1}/3)")
+                time.sleep(wait)
+            else:
+                raise
+    return ""
+
+
+def generate_shiba_trend_text(topic_text: str) -> str:
+    """トレンド・ニュースに対してしばもちが柴犬目線で反応する投稿文を生成"""
+    prompt = f"""今日のニュース・話題（見出しリスト）：
+{topic_text}
+
+この中の1つの話題に対して、しばもちが柴犬目線で軽くコメントする投稿文を書いてください。
+2〜4行以内。重い話題は避けて、日常・生活・季節・おもしろ系の話題を優先してください。"""
+    return _call_claude_shiba(prompt)
+
+
+def generate_shiba_casual_text() -> str:
+    """しばもちの日常ひとコマ投稿文を生成"""
+    scene = random.choice(SHIBA_CASUAL_SCENES)
+    prompt = f"""シーン：{scene}
+
+このシーンでしばもちが感じていることや思っていることを、短い投稿文にしてください。
+2〜4行以内。しばもちらしく。"""
+    return _call_claude_shiba(prompt)
+
+
+def generate_shiba_comic_prompt() -> str:
+    """コマ漫画のDALL-E 3用英語プロンプトをClaudeで生成する"""
+    system = """You generate DALL-E 3 image prompts for a Japanese-style single-panel comic (1-koma manga).
+
+Character description (MUST follow exactly):
+- Name: Shibamochi
+- A very round, plump, plush-like Shiba Inu
+- Soft orange-brown and cream/white fur
+- Small round black eyes, tiny black nose, small curved mouth
+- Fluffy curled tail
+- Slightly chubby stuffed-animal proportions, no visible neck
+- Looks like a living plush toy
+
+Art style (MUST follow exactly):
+- Hand-drawn single-panel sketch
+- Rough pencil outlines with light cross-hatching
+- Soft watercolor or colored-pencil wash
+- Warm pastel tones, cozy and slightly humorous feel
+- Simple background, no clutter
+- NO text, NO speech bubbles, NO logos, NO captions, NO writing of any kind
+
+Output: One English DALL-E 3 prompt only. No explanations. No Japanese."""
+
+    scene = random.choice(SHIBA_COMIC_SCENES)
+    prompt = f"Scene: Shibamochi is {scene}. Write a DALL-E 3 prompt for this scene."
+
+    for attempt in range(3):
+        try:
+            message = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=300,
+                system=system,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return message.content[0].text.strip()
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < 2:
+                time.sleep(30 * (attempt + 1))
+            else:
+                raise
+    return ""
+
+
+def generate_shiba_product_text(products: list) -> tuple[str, str]:
+    """商品紹介投稿文をしばもち口調で生成。戻り値: (text, pattern_name)"""
+    item_names = "、".join(p["item_name"] for p in products[:2])
+    prompt = f"""紹介する商品：{item_names}
+
+しばもちが飼い主さんへDGRUの柴犬商品を紹介する投稿文を書いてください。
+「飼い主さんに着てもらいたい」「一緒に歩くとちょっと誇らしい」くらいの温度感で。
+商品URLは本文に書かない（返信に貼るので不要）。
+2〜4行以内。しばもちらしく。"""
+    text = _call_claude_shiba(prompt)
+    return text, "SHIBA_PRODUCT_INTRO"

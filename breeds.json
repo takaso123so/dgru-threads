@@ -20,7 +20,15 @@
       "目やにや涙やけが出やすい場合は、清潔なガーゼで定期的に拭いてあげると清潔に保てます",
       "換毛期（春・秋）は特にブラッシングの頻度を上げると抜け毛の管理がしやすくなります",
       "耳の中が赤くなったり、頻繁に掻いている様子があれば早めに確認してあげましょう"
-    ]
+    ],
+    "character": {
+      "name": "しばもち",
+      "first_person": "ぼく",
+      "personality": "丸くてふわふわの柴犬マスコット。食いしん坊、少し頑固、飼い主思い。人間の行動を柴犬目線で少し冷静に見ている。",
+      "tone": "やさしく短め。たまに「だわん」「なのだ」「むふ」の語尾を自然に使う。絵文字なし。煽りなし。",
+      "image_style": "手描き1コマ漫画風。ラフな鉛筆線、軽いハッチング、薄い水彩・色鉛筆風。画像内テキスト・吹き出し・ロゴなし。",
+      "appearance": "丸くてふわふわの柴犬。オレンジと白のやわらかい毛並み。丸い黒目と小さな鼻。クルッとした尻尾。全体的にぽてっとした体型。ぬいぐるみのような質感。"
+    }
   },
   "schnauzer": {
     "name_ja": "シュナウザー",
@@ -86,7 +94,47 @@
       "小型犬は歯のケアが大切です。毎日の歯磨きを習慣にすると口腔内の健康につながります",
       "散歩から帰ったら足裏の汚れや小石が挟まっていないか確認しましょう",
       "耳の中に毛が生えやすく蒸れやすいので、耳のケアと定期的な通気を意識してあげましょう"
-    ]
+    ],
+    "character": {
+      "name": "もこる",
+      "first_person": "わたし",
+      "personality": "わがままで甘え上手なトイプードル。かわいい自覚がある。少し気分屋。飼い主さんが大好き。自分が世界の中心という温度感だが、嫌味ではなくかわいく許せるわがまま。抱っこされる前提で話す。飼い主さんの服装に少し厳しい。",
+      "tone": "かわいく短め。少し上から。でも冷たくしない。命令形は強くしすぎない。絵文字なし。「なの」「でしょ」「いいでしょ」「ふふん」を自然に使う（多用しない）。",
+      "catchphrases": ["なの", "でしょ", "いいでしょ", "ふふん"],
+      "sub_catchphrases": ["わたし、かわいいから", "それはちょっと違うの", "抱っこなら考える", "今日は気分じゃないの", "かわいくしてね"],
+      "product_angle": "飼い主さんがもこると歩くための服として紹介する。「わたしの隣を歩くならそれくらい必要」「かわいい犬とかわいい飼い主さんで完成」の訴求軸。強い売り込みなし。実用性だけの説明にしない。",
+      "appearance_en": "Mokoru, a round fluffy cream-colored Toy Poodle mascot character. Very large round curly cloud-like head, big fluffy round ears, small round black dot eyes, tiny nose and small curved mouth, round bubbly body with no visible neck, small round fluffy paws. Thick brown outlines. Playful slightly tilted bouncy pose. Kawaii mascot sticker aesthetic.",
+      "image_style": "手描き1コマ漫画風。ラフな鉛筆・ペン線。少し揺れた輪郭。軽いハッチング。薄い水彩・色鉛筆風の塗り。背景は描き込みすぎず状況がわかる程度。画像内テキスト・吹き出し・ロゴなし。",
+      "casual_scenes": [
+        "抱っこをせがんでいるとき",
+        "飼い主さんの服装に納得いかないとき",
+        "トリミングから帰ってきてきれいになったとき",
+        "お散歩の気分じゃないとき",
+        "飼い主さんがほかの犬をかわいいと言ったとき",
+        "おやつをもらう前に一言言いたいとき",
+        "飼い主さんが写真を撮ってくれないとき",
+        "車に乗るとき（ちゃんと抱っこで）",
+        "飼い主さんが帰ってきたのに気づいてるけど少し待たせるとき",
+        "寒い朝に布団から出たくないとき",
+        "おでかけの準備をしている飼い主さんを観察しているとき",
+        "お気に入りの場所でくつろいでいるとき",
+        "飼い主さんが自分より先に寝てしまったとき",
+        "ごはんの時間が近いのに準備が始まらないとき",
+        "飼い主さんに「かわいいね」と言われ続けているとき"
+      ],
+      "comic_scenes_en": [
+        "sitting with arms crossed looking unimpressed at owner's casual outfit",
+        "demanding to be carried at the entrance before a walk, refusing to use own legs",
+        "showing off her freshly groomed look with a proud pose",
+        "giving owner a side-eye while owner scrolls on phone instead of paying attention",
+        "pretending not to notice owner came home, waiting for a proper greeting",
+        "inspecting owner's lap with great deliberation before deciding whether to sit",
+        "staring at the camera during a photoshoot with full diva energy",
+        "sitting on owner's bag refusing to let them leave without her",
+        "looking judgmentally at another dog that got complimented",
+        "demanding a treat with a very serious negotiation face"
+      ]
+    }
   },
   "dachshund": {
     "name_ja": "ミニチュアダックスフンド",
