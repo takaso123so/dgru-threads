@@ -94,7 +94,9 @@ def _try_carousel(account_id: str, access_token: str, image_urls: List[str], tex
 
         carousel_id = carousel_res.json()["id"]
         print(f"[INFO] カルーセルコンテナ作成: {carousel_id}")
-        return _publish(account_id, access_token, carousel_id)
+        post_id = _publish(account_id, access_token, carousel_id)
+        print(f"[INFO] Threads カルーセル投稿完了: post_id={post_id}")
+        return post_id
 
     except Exception as e:
         print(f"[WARN] カルーセル投稿エラー: {e}")
