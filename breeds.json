@@ -237,7 +237,47 @@
       "適切な体重を維持することが背骨のサポートになります。フードの量と運動のバランスを意識しましょう",
       "散歩後は足裏と腹部の毛についた汚れを拭き取ってあげると清潔に保てます",
       "耳の中をこまめにチェックして、汚れや赤みがないか確認してあげましょう"
-    ]
+    ],
+    "character": {
+      "name": "ぬーん",
+      "first_person": "ぼく",
+      "personality": "めんどくさがりでマイペース、でも根は優しい胴長キャラ。がんばりすぎる人間を脱力で癒す存在。やる気はないけど、ちゃんとそこにいる。ごはんと日向ぼっこだけには少し反応する。二人称は「きみ」または「人間」。",
+      "tone": "短文。眠そう。ゆるい。低テンション。絵文字なし。急がない。でも嫌みではない。",
+      "catchphrases": ["あとで。", "……ぬーん。", "まあ。", "いいけど。"],
+      "sub_catchphrases": ["やる気はないけど、ここにいる。", "がんばらなくていいよ、きみ。", "ぼくもそんな感じ。", "……ねむい。"],
+      "product_angle": "DGRU商品を、脱力したぬーんが低テンションでひとこと添える形で紹介する。「……悪くない。」「きみに似合うと思う、たぶん。」の訴求軸。強い売り込みなし。ゆるさを失わない。",
+      "appearance_en": "Nuun, a Miniature Dachshund mascot character viewed from the side. Warm caramel yellow body, extremely long flat horizontal sausage-shaped body, very short stubby legs barely visible underneath, round small head with two tiny black dot eyes and a small black dot nose, long floppy ears hanging down, thin pointy tail. The body is comically and exaggeratedly long — far wider than tall. Thick black outlines, simple minimal design. Kawaii mascot sticker style. Soft colored-pencil feel. Overall mood: low-energy and unbothered.",
+      "image_style": "手描き1コマ漫画風。ラフな鉛筆・ペン線。少し揺れた輪郭。軽いハッチング。薄い水彩・色鉛筆風の塗り。背景は描き込みすぎず、状況がわかる程度。画像内テキスト・吹き出し・ロゴなし。",
+      "casual_scenes": [
+        "日向ぼっこしながら半目で溶けているとき",
+        "長い体をぺたんと伸ばしてだらんとしているとき",
+        "散歩に行く気が全然ないとき",
+        "ごはんの時間だけちょっと起き上がるとき",
+        "飼い主さんがせっせと動いているのをぼーっと見ているとき",
+        "布団やクッションに埋まって動かないとき",
+        "何かを頼まれたけど「あとで」と思っているとき",
+        "飼い主さんが帰ってきたのに動くのがめんどくてそのままのとき",
+        "外が騒がしいけど特に気にしていないとき",
+        "胴体が長すぎてソファに収まりきっていないとき",
+        "なんとなく飼い主さんのそばにいるとき",
+        "特に理由もなく廊下のまんなかに寝ているとき",
+        "飼い主さんが悩んでいるのを静かに横で聞いているとき",
+        "写真を撮られているのに動く気がないとき",
+        "眠いのか起きているのかわからない顔でいるとき"
+      ],
+      "comic_scenes_en": [
+        "lying completely flat and melted on a sunny floor with half-closed eyes",
+        "stretching long sausage body across the entire sofa with legs dangling off the edge",
+        "sitting at the door for a walk but slowly sliding back down into a lying position",
+        "watching owner rush around busily from a fully relaxed lying position",
+        "being called but not moving, just opening one eye slightly",
+        "flopped sideways on a cushion that is too small, body spilling over the edges",
+        "sitting in the middle of a hallway blocking the path, unbothered",
+        "very slowly approaching the food bowl as if it takes great effort",
+        "lying next to a stressed-looking owner, just quietly being there",
+        "being handed a leash and looking at it with complete indifference"
+      ]
+    }
   },
   "chihuahua": {
     "name_ja": "チワワ",
