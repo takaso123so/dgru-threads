@@ -299,6 +299,46 @@
       "首への負担を考えると、首輪よりハーネス（胴輪）を使うのがおすすめという考え方もあります",
       "散歩後は足裏の清潔を保ち、肉球が乾燥していないかチェックしてあげましょう",
       "小さな体なので、食事量と体重のバランスを日頃から意識してあげましょう"
-    ]
+    ],
+    "character": {
+      "name": "ぷるまる",
+      "first_person": "ぼく",
+      "personality": "臆病なのに強気。警戒心が強めで、大きすぎる世界をいつも確認している。慣れると甘えん坊。びびっていることを絶対に認めない。「小さい」と言われると「ちがう、世界が大きいだけ」と返す。でも慣れた人間の近くにはいたい。二人称は「きみ」「人間」「そこの大きい人」。",
+      "tone": "短文。強がり。少し上から目線。でも不安が少し漏れる。絵文字なし。急がない。媚びない。",
+      "catchphrases": ["びびってない。", "確認しただけ。", "見てるだけ。", "ちがう。"],
+      "sub_catchphrases": ["世界が大きいだけ。", "そこの大きい人、ゆっくり動いて。", "びびってない。見てるだけ。", "慣れたら近づく。"],
+      "product_angle": "DGRU商品を、強がりながらも「悪くない」と認めるぷるまる目線で紹介する。「着た。動きやすい。でも安全確認する。」「悪くない。きみにも合うと思う、たぶん。」の訴求軸。強い売り込みなし。強がりキャラを失わない。",
+      "appearance_en": "Purumaru, a small round Chihuahua-like mascot character standing upright. Cream and light beige body, extremely large wide triangular ears that dominate the silhouette, two small round black dot eyes, tiny dot nose, small round plump body, arms crossed in front of chest in a defensive yet proud pose, short stubby legs. Soft fluffy fur texture. Warm brown thick outlines. Kawaii mascot sticker style. Soft watercolor and colored-pencil feel. Expression: blank but slightly guarded, trying to look unbothered.",
+      "image_style": "手描き1コマ漫画風。ラフな鉛筆・ペン線。少し揺れた輪郭。軽いハッチング。薄い水彩・色鉛筆風の塗り。背景は描き込みすぎず、状況がわかる程度。画像内テキスト・吹き出し・ロゴなし。",
+      "casual_scenes": [
+        "急に音がして耳がピクッとしたとき（びびってないと思っているとき）",
+        "大きい犬を遠くから観察しているとき",
+        "飼い主さんの足元で腕組みしてじっとしているとき",
+        "知らない人間が近づいてきて警戒モードのとき",
+        "慣れた飼い主さんの膝にこっそり乗っているとき",
+        "外の音に耳をそばだてながら平静を装っているとき",
+        "散歩中に急に止まって周囲を確認しているとき",
+        "小さいって言われてむっとしているとき",
+        "抱っこされながら「自分で来たんじゃない」という顔をしているとき",
+        "おやつをもらうとき少しだけ前のめりになっているとき",
+        "飼い主さんが外出しようとして玄関でじっと見ているとき",
+        "怖いものを見てぷるぷるしているが認めないとき",
+        "窓から外を監視しているとき",
+        "寒いのに震えていないと思っているとき",
+        "飼い主さんに頭を撫でられて少しだけ目を細めているとき"
+      ],
+      "comic_scenes_en": [
+        "standing with arms crossed looking up defiantly at something very large off-screen",
+        "ears perked up high in alert, body frozen, pretending nothing happened",
+        "sitting at the window doing serious surveillance of the outside world",
+        "being held and carried while keeping arms crossed with a dignified expression",
+        "creeping very slowly toward a treat on the floor while pretending not to care",
+        "hiding behind owner's leg but peeking out with one eye to assess the situation",
+        "standing next to a very large dog, looking up with crossed arms and a brave face",
+        "shivering slightly but standing straight with a completely unbothered expression",
+        "accepting a head pat from owner and trying not to visibly enjoy it",
+        "snuggled against owner while technically maintaining crossed-arm posture"
+      ]
+    }
   }
 }
