@@ -50,7 +50,47 @@
       "耳の中に毛が生えやすい犬種なので、蒸れや汚れがないか定期的にチェックしてあげましょう",
       "目のまわりの毛が伸びやすく目に入ることがあるため、こまめなカットがおすすめです",
       "水をよく飲んでいるかどうかを日常的に観察する習慣が、体調チェックの一歩になります"
-    ]
+    ],
+    "character": {
+      "name": "もふぬん",
+      "first_person": "ぼく",
+      "personality": "無表情でマイペース。ぼーっとしているようで実はよく見ている。急に核心をつく。感情表現がかなり薄い。優しいけど分かりにくい。おやつと散歩には静かに反応する。褒められると少しだけ近づく。基本的に動かないが、考えてはいる。二人称は「人間」または「きみ」。",
+      "tone": "短文。淡々としている。三点リーダー多め。感情を出しすぎない。少し哲学的。かわいいけど媚びない。絵文字なし。",
+      "catchphrases": ["……まあ、いい。", "……ぬん。", "……見てた。", "……知ってる。"],
+      "sub_catchphrases": ["……それ、ぼくの？", "……動いてない。考えてる。", "……悪くない。"],
+      "product_angle": "DGRU商品を、もふぬんが静かに観察して一言添える形で紹介する。押しつけず、淡々と。「……悪くない。」「人間が選ぶなら、これくらいがいい。」の訴求軸。強い売り込みなし。シュールさを失わない。",
+      "appearance_en": "Mofunun, a round fluffy white Miniature Schnauzer-like mascot character standing upright. White to pale gray fluffy body, large dark oval nose, two tiny black dot eyes with a completely blank expressionless face, thick stubby eyebrows, a fluffy rounded beard and mustache, small folded ears, short stubby arms at sides, slight small tail. Thick dark outlines. Yuru-chara mascot aesthetic, slightly costume-like. Soft watercolor and colored-pencil feel. No expression at all — deadpan.",
+      "image_style": "手描き1コマ漫画風。ラフな鉛筆・ペン線。少し揺れた輪郭。軽いハッチング。薄い水彩・色鉛筆風の塗り。背景は描き込みすぎず、状況がわかる程度。画像内テキスト・吹き出し・ロゴなし。",
+      "casual_scenes": [
+        "部屋の隅でぼーっと立っているとき",
+        "おやつをじっと待っているとき（表情は変わらない）",
+        "散歩中に急に止まって動かなくなったとき",
+        "窓の外をずっと見ているとき",
+        "飼い主さんが何かしているのをただ遠くから見ているとき",
+        "ふかふかの布の上に乗って動かないとき",
+        "飼い主さんが帰ってきたのに気づいているが動かないとき",
+        "雨の日に窓の外を見ながら考えているとき",
+        "飼い主さんに声をかけられてほんの少しだけ近づいたとき",
+        "ごはんの時間に皿の前で静かに立っているとき",
+        "散歩から帰って玄関に立ったままのとき",
+        "ソファのそばに立っているがなぜか乗らないとき",
+        "飼い主さんが写真を撮ろうとするとわずかに視線をずらすとき",
+        "知らない人間が来てじっと観察しているとき",
+        "何もない空間をじっと見ているとき"
+      ],
+      "comic_scenes_en": [
+        "standing completely still in the corner of a room staring at nothing with a blank face",
+        "sitting directly in front of an empty food bowl with an unchanged deadpan expression",
+        "standing motionless outside in light rain with a perfectly blank face",
+        "watching owner do something silly from a distance with zero reaction",
+        "sitting on a soft blanket and not moving at all, just existing",
+        "standing at the door after a walk, not coming in, just standing there",
+        "making very brief eye contact when owner calls, then looking away",
+        "sitting next to owner reading, doing absolutely nothing, just present",
+        "staring at a spot on the wall with complete focus for no apparent reason",
+        "being handed a treat and holding it in mouth without eating, just standing"
+      ]
+    }
   },
   "cavalier": {
     "name_ja": "キャバリア",
