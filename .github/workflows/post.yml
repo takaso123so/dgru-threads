@@ -12,6 +12,10 @@ on:
     - cron: '0 4 * * *'    # JST 13:00 - toypoodle trend_commentary
     - cron: '0 8 * * *'    # JST 17:00 - toypoodle casual (コマ漫画日は画像生成→commit→post)
     - cron: '30 10 * * *'  # JST 19:30 - toypoodle product_intro
+    - cron: '30 0 * * *'   # JST 9:30  - cavalier trend_commentary
+    - cron: '0 5 * * *'    # JST 14:00 - cavalier trend_commentary
+    - cron: '30 8 * * *'   # JST 17:30 - cavalier casual (コマ漫画日は画像生成→commit→post)
+    - cron: '30 11 * * *'  # JST 20:30 - cavalier product_intro
   workflow_dispatch:
     inputs:
       breed:
@@ -96,6 +100,31 @@ jobs:
             echo "[INFO] 今日はコマ漫画の日ではありません（day=$DAY）"
           fi
 
+      - name: Generate and publish comic (cavalier - 17:30 JST)
+        if: github.event.schedule == '30 8 * * *'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DAY=$(date +%-d)
+          if [ $((DAY % 2)) -eq 0 ]; then
+            echo "[INFO] コマ漫画の日です（day=$DAY）"
+            python main.py cavalier comic_generate
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add comics/
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: add comic panel $(date +%Y-%m-%d)"
+              git push https://x-access-token:${GITHUB_TOKEN}@github.com/takaso123so/dgru-threads.git
+              echo "[INFO] GitHub Pages反映待ち (120秒)..."
+              sleep 120
+            else
+              echo "[INFO] 新しいコマ漫画はありません"
+            fi
+          else
+            echo "[INFO] 今日はコマ漫画の日ではありません（day=$DAY）"
+          fi
+
       - name: Post to Threads
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -149,8 +178,16 @@ jobs:
                 python main.py toypoodle casual all ;;   # JST 17:00
               "30 10 * * *")
                 python main.py toypoodle product_intro all ;; # JST 19:30
+              "30 0 * * *")
+                python main.py cavalier trend_commentary all ;; # JST 9:30
+              "0 5 * * *")
+                python main.py cavalier trend_commentary all ;; # JST 14:00
+              "30 8 * * *")
+                python main.py cavalier casual all ;;    # JST 17:30
+              "30 11 * * *")
+                python main.py cavalier product_intro all ;; # JST 20:30
               *)
-                python main.py all dgru_text all ;;     # JST 9:00 - 全犬種（shiba/toypoodle除く）
+                python main.py all dgru_text all ;;     # JST 9:00 - 全犬種（shiba/toypoodle/cavalier除く）
             esac
           else
             python main.py ${{ github.event.inputs.breed }} ${{ github.event.inputs.post_type }} ${{ github.event.inputs.platform }}

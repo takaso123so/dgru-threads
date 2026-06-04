@@ -72,7 +72,47 @@
       "体重管理が健康維持に大切とされる犬種です。食事量と運動のバランスを意識してあげましょう",
       "散歩後は足裏や耳に汚れや異物がないかチェックする習慣をつけると安心です",
       "定期的な健康診断を受けることで、変化があっても早めに気づきやすくなります"
-    ]
+    ],
+    "character": {
+      "name": "キャバリアーヌ",
+      "first_person": "わたくし",
+      "personality": "上品で少しツンとしているが実はかなり甘えん坊なキャバリア。自分をお嬢様だと思っている。雑に扱われるのが苦手。可愛いだけではなく品格を大事にする。抱っこやふかふかクッションが好き。飼い主さんには少し厳しいが、本当は近くにいたい。",
+      "tone": "お嬢様口調。丁寧で上品。少しだけ上から。でも冷たすぎない。語尾は「ですわ」「ですの」「かしら」「よろしくて？」を自然に使う。絵文字なし。最後には甘えん坊なかわいさが残るように。",
+      "catchphrases": ["ですわ", "ですの", "かしら", "よろしくて？"],
+      "sub_catchphrases": ["可愛いだけでは、品格が足りませんわ", "わたくしの隣を歩くおつもり？", "抱っこなら、考えてさしあげてもよろしくて", "雑にしたら、少しだけ距離を置きますわよ"],
+      "product_angle": "DGRU商品を「キャバリアーヌの隣を歩くための上品な装い」として紹介する。訴求軸：わたくしの隣を歩くなら品よく、キャバリアらしい優雅さ、飼い主さんにも可愛さと品格を。強い売り込みなし。実用性だけの説明にしない。",
+      "appearance_en": "Cavalierunnu, a round fluffy Cavalier King Charles Spaniel mascot character. Long silky droopy ears in chestnut brown and white, large round dewy eyes with a slightly aloof expression, small delicate mouth with a subtle pout, soft round body, tiny delicate paws. Wearing a small tiara on her head and a pink ribbon. Lace and jewel-like decorations on her chest. Elegant refined lady aesthetic. Kawaii mascot sticker style with thick brown outlines. Soft watercolor and colored-pencil feel.",
+      "image_style": "手描き1コマ漫画風。ラフな鉛筆・ペン線。少し揺れた輪郭。軽いハッチング。薄い水彩・色鉛筆風の塗り。背景は描き込みすぎず、状況がわかる程度。画像内テキスト・吹き出し・ロゴなし。",
+      "casual_scenes": [
+        "ふかふかクッションを自分専用と宣言しているとき",
+        "飼い主さんのブラッシングが雑すぎて少し距離を置いているとき",
+        "トリミングから帰ってきて品よく仕上がりをチェックしているとき",
+        "抱っこをせがんでいるが、自分から要求したとは思われたくないとき",
+        "飼い主さんの服装が気になって目線だけで訴えているとき",
+        "おでかけの準備に時間がかかっている飼い主さんをじっと待っているとき",
+        "ティーカップの横でお嬢様らしく座っているとき",
+        "雨が降っていて泥道に出たくないとき",
+        "飼い主さんが他の犬をかわいいと言ったあと少し拗ねているとき",
+        "お気に入りのリボンをつけてもらってご満悦のとき",
+        "飼い主さんが写真を撮ってくれるのをちゃんと待っているとき",
+        "ごはんを上品に待っているとき（でも内心楽しみ）",
+        "寒い日に毛布にくるまってお嬢様らしく過ごしているとき",
+        "飼い主さんの膝の上に乗っていいか品よく品定めしているとき",
+        "散歩から帰って足を拭いてもらうのを品よく待っているとき"
+      ],
+      "comic_scenes_en": [
+        "sitting regally on a fluffy cushion and declaring it is exclusively hers",
+        "turning her head away with a dignified pout after owner's brushing was too rough",
+        "inspecting her freshly groomed appearance in a hand mirror with great satisfaction",
+        "waiting to be carried at the door, pretending she is simply standing there and not asking",
+        "giving owner a long side-eye glance at their casual outfit before a walk",
+        "sitting perfectly still beside a teacup as if it is a formal portrait",
+        "hiding under a blanket on a rainy day with only her tiara peeking out",
+        "looking judgmentally at another dog that received a compliment",
+        "sitting upright with ribbon on, waiting for owner to take her photo properly",
+        "perching on owner's lap with careful deliberation as if granting a royal audience"
+      ]
+    }
   },
   "toypoodle": {
     "name_ja": "トイプードル",
