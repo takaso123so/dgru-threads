@@ -2,28 +2,44 @@ name: Threads Auto Post
 
 on:
   schedule:
-    - cron: '0 0 * * *'    # JST 9:00  - dgru_text (全犬種、shiba除く)
-    - cron: '0 12 * * *'   # JST 21:00 - dgru_image (全犬種、shiba除く)
-    - cron: '30 23 * * *'  # JST 8:30  - shiba trend_commentary
+    # --- shiba (しばもち) 1日6投稿 ---
+    - cron: '30 23 * * *'  # JST  8:30 - shiba trend_commentary
+    - cron: '30 1 * * *'   # JST 10:30 - shiba casual_text
     - cron: '30 3 * * *'   # JST 12:30 - shiba trend_commentary
+    - cron: '45 6 * * *'   # JST 15:45 - shiba trend_commentary
     - cron: '30 7 * * *'   # JST 16:30 - shiba casual (コマ漫画日は画像生成→commit→post)
     - cron: '0 10 * * *'   # JST 19:00 - shiba product_intro
-    - cron: '0 23 * * *'   # JST 8:00  - toypoodle trend_commentary
+    # --- toypoodle (もこる) 1日6投稿 ---
+    - cron: '0 23 * * *'   # JST  8:00 - toypoodle trend_commentary
+    - cron: '45 1 * * *'   # JST 10:45 - toypoodle casual_text
     - cron: '0 4 * * *'    # JST 13:00 - toypoodle trend_commentary
+    - cron: '15 7 * * *'   # JST 16:15 - toypoodle trend_commentary
     - cron: '0 8 * * *'    # JST 17:00 - toypoodle casual (コマ漫画日は画像生成→commit→post)
     - cron: '30 10 * * *'  # JST 19:30 - toypoodle product_intro
-    - cron: '30 0 * * *'   # JST 9:30  - cavalier trend_commentary
+    # --- cavalier (キャバリアーヌ) 1日6投稿 ---
+    - cron: '30 0 * * *'   # JST  9:30 - cavalier trend_commentary
+    - cron: '15 2 * * *'   # JST 11:15 - cavalier casual_text
     - cron: '0 5 * * *'    # JST 14:00 - cavalier trend_commentary
+    - cron: '45 7 * * *'   # JST 16:45 - cavalier trend_commentary
     - cron: '30 8 * * *'   # JST 17:30 - cavalier casual (コマ漫画日は画像生成→commit→post)
     - cron: '30 11 * * *'  # JST 20:30 - cavalier product_intro
-    - cron: '0 1 * * *'    # JST 10:00 - schnauzer trend_commentary
+    # --- schnauzer (もふぬ) 1日6投稿 ---
+    - cron: '0 22 * * *'   # JST  7:00 - schnauzer trend_commentary
+    - cron: '45 0 * * *'   # JST  9:45 - schnauzer casual_text
+    - cron: '0 4 * * *'    # JST 13:00 - schnauzer trend_commentary (toypoodleと同時)
     - cron: '0 6 * * *'    # JST 15:00 - schnauzer trend_commentary
     - cron: '0 9 * * *'    # JST 18:00 - schnauzer casual (コマ漫画日は画像生成→commit→post)
     - cron: '0 11 * * *'   # JST 20:00 - schnauzer product_intro
+    # --- dachshund (ぬーん) 1日6投稿 ---
+    - cron: '30 22 * * *'  # JST  7:30 - dachshund trend_commentary
+    - cron: '15 0 * * *'   # JST  9:15 - dachshund casual_text
     - cron: '0 2 * * *'    # JST 11:00 - dachshund trend_commentary
     - cron: '0 7 * * *'    # JST 16:00 - dachshund trend_commentary
     - cron: '30 9 * * *'   # JST 18:30 - dachshund casual (コマ漫画日は画像生成→commit→post)
     - cron: '30 12 * * *'  # JST 21:30 - dachshund product_intro
+    # --- chihuahua (ぷるまる) 1日6投稿 ---
+    - cron: '15 22 * * *'  # JST  7:15 - chihuahua trend_commentary
+    - cron: '45 23 * * *'  # JST  8:45 - chihuahua casual_text
     - cron: '30 2 * * *'   # JST 11:30 - chihuahua trend_commentary
     - cron: '30 6 * * *'   # JST 15:30 - chihuahua trend_commentary
     - cron: '45 9 * * *'   # JST 18:45 - chihuahua casual (コマ漫画日は画像生成→commit→post)
@@ -247,58 +263,50 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             case "${{ github.event.schedule }}" in
-              "0 12 * * *")
-                python main.py all dgru_image all ;;    # JST 21:00 - 全犬種（shiba除く）
-              "30 23 * * *")
-                python main.py shiba trend_commentary all ;;  # JST 8:30
-              "30 3 * * *")
-                python main.py shiba trend_commentary all ;;  # JST 12:30
-              "30 7 * * *")
-                python main.py shiba casual all ;;      # JST 16:30
-              "0 10 * * *")
-                python main.py shiba product_intro all ;; # JST 19:00
-              "0 23 * * *")
-                python main.py toypoodle trend_commentary all ;; # JST 8:00
+              # shiba
+              "30 23 * * *") python main.py shiba trend_commentary all ;;   # JST  8:30
+              "30 1 * * *")  python main.py shiba casual_text all ;;        # JST 10:30
+              "30 3 * * *")  python main.py shiba trend_commentary all ;;   # JST 12:30
+              "45 6 * * *")  python main.py shiba trend_commentary all ;;   # JST 15:45
+              "30 7 * * *")  python main.py shiba casual all ;;             # JST 16:30
+              "0 10 * * *")  python main.py shiba product_intro all ;;      # JST 19:00
+              # toypoodle
+              "0 23 * * *")  python main.py toypoodle trend_commentary all ;; # JST  8:00
+              "45 1 * * *")  python main.py toypoodle casual_text all ;;    # JST 10:45
+              "15 7 * * *")  python main.py toypoodle trend_commentary all ;; # JST 16:15
+              "0 8 * * *")   python main.py toypoodle casual all ;;         # JST 17:00
+              "30 10 * * *") python main.py toypoodle product_intro all ;;  # JST 19:30
+              # cavalier
+              "30 0 * * *")  python main.py cavalier trend_commentary all ;; # JST  9:30
+              "15 2 * * *")  python main.py cavalier casual_text all ;;     # JST 11:15
+              "0 5 * * *")   python main.py cavalier trend_commentary all ;; # JST 14:00
+              "45 7 * * *")  python main.py cavalier trend_commentary all ;; # JST 16:45
+              "30 8 * * *")  python main.py cavalier casual all ;;          # JST 17:30
+              "30 11 * * *") python main.py cavalier product_intro all ;;   # JST 20:30
+              # schnauzer
+              "0 22 * * *")  python main.py schnauzer trend_commentary all ;; # JST  7:00
+              "45 0 * * *")  python main.py schnauzer casual_text all ;;    # JST  9:45
+              "0 6 * * *")   python main.py schnauzer trend_commentary all ;; # JST 15:00
+              "0 9 * * *")   python main.py schnauzer casual all ;;         # JST 18:00
+              "0 11 * * *")  python main.py schnauzer product_intro all ;;  # JST 20:00
+              # dachshund
+              "30 22 * * *") python main.py dachshund trend_commentary all ;; # JST  7:30
+              "15 0 * * *")  python main.py dachshund casual_text all ;;    # JST  9:15
+              "0 2 * * *")   python main.py dachshund trend_commentary all ;; # JST 11:00
+              "0 7 * * *")   python main.py dachshund trend_commentary all ;; # JST 16:00
+              "30 9 * * *")  python main.py dachshund casual all ;;         # JST 18:30
+              "30 12 * * *") python main.py dachshund product_intro all ;;  # JST 21:30
+              # chihuahua
+              "15 22 * * *") python main.py chihuahua trend_commentary all ;; # JST  7:15
+              "45 23 * * *") python main.py chihuahua casual_text all ;;    # JST  8:45
+              "30 2 * * *")  python main.py chihuahua trend_commentary all ;; # JST 11:30
+              "30 6 * * *")  python main.py chihuahua trend_commentary all ;; # JST 15:30
+              "45 9 * * *")  python main.py chihuahua casual all ;;         # JST 18:45
+              "0 13 * * *")  python main.py chihuahua product_intro all ;;  # JST 22:00
+              # toypoodle/schnauzer 共有スロット（13:00）
               "0 4 * * *")
-                python main.py toypoodle trend_commentary all ;; # JST 13:00
-              "0 8 * * *")
-                python main.py toypoodle casual all ;;   # JST 17:00
-              "30 10 * * *")
-                python main.py toypoodle product_intro all ;; # JST 19:30
-              "30 0 * * *")
-                python main.py cavalier trend_commentary all ;; # JST 9:30
-              "0 5 * * *")
-                python main.py cavalier trend_commentary all ;; # JST 14:00
-              "30 8 * * *")
-                python main.py cavalier casual all ;;    # JST 17:30
-              "30 11 * * *")
-                python main.py cavalier product_intro all ;; # JST 20:30
-              "0 1 * * *")
-                python main.py schnauzer trend_commentary all ;; # JST 10:00
-              "0 6 * * *")
-                python main.py schnauzer trend_commentary all ;; # JST 15:00
-              "0 9 * * *")
-                python main.py schnauzer casual all ;;   # JST 18:00
-              "0 11 * * *")
-                python main.py schnauzer product_intro all ;; # JST 20:00
-              "0 2 * * *")
-                python main.py dachshund trend_commentary all ;; # JST 11:00
-              "0 7 * * *")
-                python main.py dachshund trend_commentary all ;; # JST 16:00
-              "30 9 * * *")
-                python main.py dachshund casual all ;;   # JST 18:30
-              "30 12 * * *")
-                python main.py dachshund product_intro all ;; # JST 21:30
-              "30 2 * * *")
-                python main.py chihuahua trend_commentary all ;; # JST 11:30
-              "30 6 * * *")
-                python main.py chihuahua trend_commentary all ;; # JST 15:30
-              "45 9 * * *")
-                python main.py chihuahua casual all ;;   # JST 18:45
-              "0 13 * * *")
-                python main.py chihuahua product_intro all ;; # JST 22:00
-              *)
-                python main.py all dgru_text all ;;     # JST 9:00 - 全犬種（キャラ犬種除く）
+                python main.py toypoodle trend_commentary all
+                python main.py schnauzer trend_commentary all ;;            # JST 13:00
             esac
           else
             python main.py ${{ github.event.inputs.breed }} ${{ github.event.inputs.post_type }} ${{ github.event.inputs.platform }}

@@ -251,7 +251,7 @@ def run_curation(breed: str, platform: str = "threads"):
         log_curation_post(breed, valid_images, post_id, pattern_name)
 
 
-CHARACTER_POST_TYPES = ("trend_commentary", "casual", "comic_generate", "product_intro")
+CHARACTER_POST_TYPES = ("trend_commentary", "casual", "casual_text", "comic_generate", "product_intro")
 SHIBA_POST_TYPES = CHARACTER_POST_TYPES  # 後方互換エイリアス
 
 
@@ -336,6 +336,11 @@ def run_character(breed: str, post_type: str, platform: str = "threads"):
             text = generate_character_casual_text(breed)
             print(f"[INFO] 日常投稿文:\n{text}")
             _post_text(text)
+
+    elif post_type == "casual_text":
+        text = generate_character_casual_text(breed)
+        print(f"[INFO] 日常テキスト投稿文:\n{text}")
+        _post_text(text)
 
     elif post_type == "product_intro":
         try:
@@ -461,6 +466,11 @@ def run_shiba(post_type: str, platform: str = "threads"):
             text = generate_shiba_casual_text()
             print(f"[INFO] 日常投稿文:\n{text}")
             _post_text(text)
+
+    elif post_type == "casual_text":
+        text = generate_shiba_casual_text()
+        print(f"[INFO] 日常テキスト投稿文:\n{text}")
+        _post_text(text)
 
     elif post_type == "product_intro":
         try:
