@@ -280,7 +280,6 @@ def run_character(breed: str, post_type: str, platform: str = "threads"):
     from generator.character_generator import (
         generate_character_trend_text,
         generate_character_casual_text,
-        generate_character_product_text,
     )
 
     threads_account = THREADS_ACCOUNTS.get(breed, {})
@@ -369,8 +368,8 @@ def run_character(breed: str, post_type: str, platform: str = "threads"):
             print("[ERROR] 画像が2枚未満のため投稿をスキップ")
             return
 
-        text, pattern_name = generate_character_product_text(breed, products)
-        print(f"[INFO] キャラクター商品投稿文:\n{text}")
+        text, _, pattern_name = generate_post_text(breed, force_image=True)
+        print(f"[INFO] 商品投稿文:\n{text}")
 
         utm = urlencode({
             "utm_source": platform,
@@ -410,7 +409,6 @@ def run_shiba(post_type: str, platform: str = "threads"):
     from generator.content_generator import (
         generate_shiba_trend_text,
         generate_shiba_casual_text,
-        generate_shiba_product_text,
     )
 
     threads_account = THREADS_ACCOUNTS.get("shiba", {})
@@ -499,8 +497,8 @@ def run_shiba(post_type: str, platform: str = "threads"):
             print("[ERROR] 画像が2枚未満のため投稿をスキップ")
             return
 
-        text, pattern_name = generate_shiba_product_text(products)
-        print(f"[INFO] しばもち商品投稿文:\n{text}")
+        text, _, pattern_name = generate_post_text("shiba", force_image=True)
+        print(f"[INFO] 商品投稿文:\n{text}")
 
         utm = urlencode({
             "utm_source": platform,
