@@ -1,28 +1,28 @@
 name: Threads Auto Post
 
 on:
-  schedule:
-    # 朝9時 JST (00:00 UTC) - ブランドメッセージ（テキストのみ）
-    - cron: '0 0 * * *'    # JST  9:00 - shiba
-    - cron: '5 0 * * *'    # JST  9:05 - dachshund
-    - cron: '10 0 * * *'   # JST  9:10 - schnauzer
-    - cron: '15 0 * * *'   # JST  9:15 - toypoodle
-    - cron: '20 0 * * *'   # JST  9:20 - cavalier
-    - cron: '25 0 * * *'   # JST  9:25 - chihuahua
-    # 昼12時 JST (03:00 UTC) - 犬種雑学（テキストのみ）
-    - cron: '0 3 * * *'    # JST 12:00 - shiba
-    - cron: '5 3 * * *'    # JST 12:05 - dachshund
-    - cron: '10 3 * * *'   # JST 12:10 - schnauzer
-    - cron: '15 3 * * *'   # JST 12:15 - toypoodle
-    - cron: '20 3 * * *'   # JST 12:20 - cavalier
-    - cron: '25 3 * * *'   # JST 12:25 - chihuahua
-    # 夜9時 JST (12:00 UTC) - 商品画像訴求
-    - cron: '0 12 * * *'   # JST 21:00 - shiba
-    - cron: '5 12 * * *'   # JST 21:05 - dachshund
-    - cron: '10 12 * * *'  # JST 21:10 - schnauzer
-    - cron: '15 12 * * *'  # JST 21:15 - toypoodle
-    - cron: '20 12 * * *'  # JST 21:20 - cavalier
-    - cron: '25 12 * * *'  # JST 21:25 - chihuahua
+  # schedule: # 自動投稿停止中
+  #   # 朝9時 JST (00:00 UTC) - ブランドメッセージ（テキストのみ）
+  #   - cron: '0 0 * * *'    # JST  9:00 - shiba
+  #   - cron: '5 0 * * *'    # JST  9:05 - dachshund
+  #   - cron: '10 0 * * *'   # JST  9:10 - schnauzer
+  #   - cron: '15 0 * * *'   # JST  9:15 - toypoodle
+  #   - cron: '20 0 * * *'   # JST  9:20 - cavalier
+  #   - cron: '25 0 * * *'   # JST  9:25 - chihuahua
+  #   # 昼12時 JST (03:00 UTC) - 犬種雑学（テキストのみ）
+  #   - cron: '0 3 * * *'    # JST 12:00 - shiba
+  #   - cron: '5 3 * * *'    # JST 12:05 - dachshund
+  #   - cron: '10 3 * * *'   # JST 12:10 - schnauzer
+  #   - cron: '15 3 * * *'   # JST 12:15 - toypoodle
+  #   - cron: '20 3 * * *'   # JST 12:20 - cavalier
+  #   - cron: '25 3 * * *'   # JST 12:25 - chihuahua
+  #   # 夜9時 JST (12:00 UTC) - 商品画像訴求
+  #   - cron: '0 12 * * *'   # JST 21:00 - shiba
+  #   - cron: '5 12 * * *'   # JST 21:05 - dachshund
+  #   - cron: '10 12 * * *'  # JST 21:10 - schnauzer
+  #   - cron: '15 12 * * *'  # JST 21:15 - toypoodle
+  #   - cron: '20 12 * * *'  # JST 21:20 - cavalier
+  #   - cron: '25 12 * * *'  # JST 21:25 - chihuahua
   workflow_dispatch:
     inputs:
       breed:
