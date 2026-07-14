@@ -2,14 +2,21 @@ name: Threads Auto Post
 
 on:
   schedule:
-    # 朝9時 JST (00:00 UTC)
+    # 朝9時 JST (00:00 UTC) - ブランドメッセージ（テキストのみ）
     - cron: '0 0 * * *'    # JST  9:00 - shiba
     - cron: '5 0 * * *'    # JST  9:05 - dachshund
     - cron: '10 0 * * *'   # JST  9:10 - schnauzer
     - cron: '15 0 * * *'   # JST  9:15 - toypoodle
     - cron: '20 0 * * *'   # JST  9:20 - cavalier
     - cron: '25 0 * * *'   # JST  9:25 - chihuahua
-    # 夜9時 JST (12:00 UTC)
+    # 昼12時 JST (03:00 UTC) - 犬種雑学（テキストのみ）
+    - cron: '0 3 * * *'    # JST 12:00 - shiba
+    - cron: '5 3 * * *'    # JST 12:05 - dachshund
+    - cron: '10 3 * * *'   # JST 12:10 - schnauzer
+    - cron: '15 3 * * *'   # JST 12:15 - toypoodle
+    - cron: '20 3 * * *'   # JST 12:20 - cavalier
+    - cron: '25 3 * * *'   # JST 12:25 - chihuahua
+    # 夜9時 JST (12:00 UTC) - 商品画像訴求
     - cron: '0 12 * * *'   # JST 21:00 - shiba
     - cron: '5 12 * * *'   # JST 21:05 - dachshund
     - cron: '10 12 * * *'  # JST 21:10 - schnauzer
@@ -85,12 +92,18 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             case "${{ github.event.schedule }}" in
-              "0 0 * * *")   python main.py shiba product_intro threads ;;     # JST  9:00
-              "5 0 * * *")   python main.py dachshund product_intro threads ;; # JST  9:05
-              "10 0 * * *")  python main.py schnauzer product_intro threads ;; # JST  9:10
-              "15 0 * * *")  python main.py toypoodle product_intro threads ;; # JST  9:15
-              "20 0 * * *")  python main.py cavalier product_intro threads ;;  # JST  9:20
-              "25 0 * * *")  python main.py chihuahua product_intro threads ;; # JST  9:25
+              "0 0 * * *")   python main.py shiba morning_brand threads ;;     # JST  9:00
+              "5 0 * * *")   python main.py dachshund morning_brand threads ;; # JST  9:05
+              "10 0 * * *")  python main.py schnauzer morning_brand threads ;; # JST  9:10
+              "15 0 * * *")  python main.py toypoodle morning_brand threads ;; # JST  9:15
+              "20 0 * * *")  python main.py cavalier morning_brand threads ;;  # JST  9:20
+              "25 0 * * *")  python main.py chihuahua morning_brand threads ;; # JST  9:25
+              "0 3 * * *")   python main.py shiba noon_knowledge threads ;;    # JST 12:00
+              "5 3 * * *")   python main.py dachshund noon_knowledge threads ;; # JST 12:05
+              "10 3 * * *")  python main.py schnauzer noon_knowledge threads ;; # JST 12:10
+              "15 3 * * *")  python main.py toypoodle noon_knowledge threads ;; # JST 12:15
+              "20 3 * * *")  python main.py cavalier noon_knowledge threads ;;  # JST 12:20
+              "25 3 * * *")  python main.py chihuahua noon_knowledge threads ;; # JST 12:25
               "0 12 * * *")  python main.py shiba product_intro threads ;;     # JST 21:00
               "5 12 * * *")  python main.py dachshund product_intro threads ;; # JST 21:05
               "10 12 * * *") python main.py schnauzer product_intro threads ;; # JST 21:10

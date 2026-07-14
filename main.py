@@ -580,6 +580,26 @@ if __name__ == "__main__":
                 elif post_type in ("dgru", "all"):
                     print(f"--- DGRU投稿 ---")
                     run(b, platform=pf)
+                elif post_type == "morning_brand":
+                    from generator.content_generator import generate_post_text_by_group
+                    text, pattern_name = generate_post_text_by_group(b, ["P"])
+                    print(f"[INFO] 朝のブランドメッセージ:\n{text}")
+                    if text and pf == "threads":
+                        account = THREADS_ACCOUNTS.get(b, {})
+                        if account.get("account_id"):
+                            post_id = post_text_only(account["account_id"], account["access_token"], text)
+                            if post_id:
+                                log_post(b, [], post_id, pattern_name, with_image=False)
+                elif post_type == "noon_knowledge":
+                    from generator.content_generator import generate_post_text_by_group
+                    text, pattern_name = generate_post_text_by_group(b, ["G", "K"])
+                    print(f"[INFO] 昼の雑学:\n{text}")
+                    if text and pf == "threads":
+                        account = THREADS_ACCOUNTS.get(b, {})
+                        if account.get("account_id"):
+                            post_id = post_text_only(account["account_id"], account["access_token"], text)
+                            if post_id:
+                                log_post(b, [], post_id, pattern_name, with_image=False)
                 if post_type in ("curation", "all"):
                     print(f"--- キュレーション投稿 ---")
                     run_curation(b, platform=pf)

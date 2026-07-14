@@ -81,6 +81,13 @@ PATTERNS = [
     {"name": "L4_エピソード募集", "instruction": "2文構成・80文字以内。1文目：犬種オーナーなら共感できるエピソードのテーマを投げかける（散歩・食事・寝る場所・お気に入りの場所など）。2文目：「うちの子はどうですか」「コメントで教えてください」のようにエピソードを募集する。軽く砕けた口調でOK。DGRUには触れない。", "with_image": False},
     {"name": "L5_共感独り言", "instruction": "1文・40文字以内。犬種オーナーとして感じる「これ分かる」という共感の瞬間を、さりげない独り言として一言で。余韻が残る終わり方でOK。DGRUには触れない。", "with_image": False},
 
+    # P: 朝のブランドメッセージ系（画像なし・テキストのみ）
+    {"name": "P1_コンセプト", "instruction": "1〜2文・60文字以内。DGRUが作っているのは犬の服ではなく、犬好きの人間（飼い主）が着るアパレルだという事実を断定的に伝える。「犬の服ではない」「犬好きが着る服を作っています」という軸で。", "with_image": False},
+    {"name": "P2_作り手宣言", "instruction": "1〜2文・60文字以内。DGRUを作っている立場から、犬種オーナーのために服を作っているという宣言を語る。口調は断定的で余韻のある終わり方。「私たちは〜」「DGRUは〜」で始めてよい。", "with_image": False},
+    {"name": "P3_ブランドの立場", "instruction": "2文・80文字以内。1文目：DGRUは犬のウェアではなく、犬が好きな飼い主のためのファッションブランドだという立場を語る。2文目：だからこそ大人がちゃんと着られるデザインにこだわっているという一言。", "with_image": False},
+    {"name": "P4_理由を語る", "instruction": "2文・80文字以内。1文目：犬好きのためのおしゃれな服がなかったという背景。2文目：それを作りたくてDGRUを始めたという一言。作り手目線で語る。", "with_image": False},
+    {"name": "P5_静かな一言", "instruction": "1文・40文字以内。犬の服ではなく、犬好きが着る服というDGRUのコンセプトをひとことで。静かで余韻のある断言。DGRUに触れなくてよい。", "with_image": False},
+
     # M: 制作裏側・ブランド視点系（画像あり）
     {"name": "M1_デザインこだわり", "instruction": "2文構成・80文字以内。1文目：この犬種のデザインを作るうえでDGRUが大切にしていること・こだわっていることを作り手の視点で語る（可愛くしすぎない、渋さを残す、上品さとやさしさのバランスなど）。2文目：その理由や想いを一言で。「私たちは〜」「DGRUでは〜」など一人称で語ること。", "with_image": True},
     {"name": "M2_ブランドの動機", "instruction": "2文構成・80文字以内。1文目：なぜDGRUがこの犬種のアパレルを作っているのか、その動機や原点を語る。「犬種オーナーとして〜と感じていた」「〜という声があった」など具体的な理由で。2文目：その想いがアイテムに込められているという一言。", "with_image": True},
@@ -219,6 +226,63 @@ def weighted_choice(patterns: list[dict], weights: dict[str, float]) -> dict:
 
     pattern_weights = [weights.get(p["name"], DEFAULT_WEIGHT) for p in patterns]
     return random.choices(patterns, weights=pattern_weights, k=1)[0]
+
+
+def generate_post_text_by_group(breed, groups):
+    """指定グループ（パターン名の頭文字リスト）に絞って投稿文を生成。戻り値: (text, pattern_name)"""
+    breed_ja = BREEDS.get(breed, {}).get("name_ja", breed)
+    available = [p for p in PATTERNS if any(p["name"].startswith(g) for g in groups)]
+    if not available:
+        available = PATTERNS
+
+    weights = load_pattern_weights(breed)
+    pattern = weighted_choice(available, weights)
+
+    topic_hint = ""
+    if pattern["name"].startswith("G"):
+        topics = BREEDS.get(breed, {}).get("knowledge_topics", [])
+        if topics:
+            topic_hint = f"\n今回取り上げる知識のテーマ：{random.choice(topics)}\n"
+    elif pattern["name"].startswith("K"):
+        topics = BREEDS.get(breed, {}).get("health_topics", [])
+        if topics:
+            topic_hint = f"\n今回取り上げるケアのテーマ：{random.choice(topics)}\n"
+
+    prompt = f"""犬種：{breed_ja}
+パターン：{pattern['name']}
+指示：{pattern['instruction']}
+{topic_hint}
+【必須確認】DGRUは飼い主（人間）が着る犬種デザインのアパレルブランドです。犬に着せる服・ドッグウェアではありません。
+
+上記の指示に従って、{breed_ja}オーナー向けのThreads投稿文を1つ書いてください。"""
+
+    for attempt in range(3):
+        try:
+            message = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=200,
+                system=SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            text = message.content[0].text.strip()
+            lines = [
+                l for l in text.splitlines()
+                if not l.startswith("#")
+                and not l.startswith("---")
+                and not l.startswith("【")
+                and "投稿文" not in l
+                and "文字数" not in l
+                and "構成" not in l
+            ]
+            return "\n".join(lines).strip(), pattern["name"]
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < 2:
+                wait = 30 * (attempt + 1)
+                print(f"[WARN] API過負荷、{wait}秒後にリトライ ({attempt+1}/3)")
+                time.sleep(wait)
+            else:
+                raise
+    return "", pattern["name"]
 
 
 def generate_post_text(breed: str = "shiba", force_image: bool | None = None) -> tuple:
